@@ -5,12 +5,14 @@ const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     name: "",
     surname: "",
     role: "user",
   });
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -23,19 +25,30 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        "http://localhost:3000/auth/register",
-        formData
-      );
+      const response = await axios.post("http://localhost:3000/auth/register", {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        surname: formData.surname,
+        role: formData.role,
+      });
       console.log("Usuario registrado", response.data);
-      alert("usuario registrado");
+      setSuccess("Usuario registrado correctamente");
+      setError(""); 
     } catch (error: any) {
       console.error(
         "Error al registrar usuario",
         error.response?.data || error.message
       );
       setError(error.response?.data?.message || "Error al registrar usuario");
+      setSuccess(""); 
     }
   };
 
@@ -44,6 +57,7 @@ const Register: React.FC = () => {
       <form className="bg-white p-6 rounded shadow-md" onSubmit={handleSubmit}>
         <h2 className="text-2xl font-bold mb-4">Register</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        {success && <p className="text-green-500 mb-4">{success}</p>}
         <input
           type="email"
           name="email"
@@ -58,6 +72,15 @@ const Register: React.FC = () => {
           name="password"
           placeholder="Contraseña"
           value={formData.password}
+          onChange={handleInputChange}
+          required
+          className="w-full p-2 mb-4 border rounded"
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirma tu Contraseña"
+          value={formData.confirmPassword}
           onChange={handleInputChange}
           required
           className="w-full p-2 mb-4 border rounded"
