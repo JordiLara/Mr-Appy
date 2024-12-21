@@ -1,7 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
-const protectedRoute: React.FC<{children: JSX.Element}> = ({children}) => {
+const ProtectedRoute: React.FC<{children: JSX.Element}> = ({children}) => {
     const {user}= useAuth();
 
     if (!user) {
@@ -11,4 +11,4 @@ const protectedRoute: React.FC<{children: JSX.Element}> = ({children}) => {
     return children;
 };
 
-export default protectedRoute;
+export default ProtectedRoute;
