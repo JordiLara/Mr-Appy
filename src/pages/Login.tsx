@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login: React.FC = () => {
@@ -8,6 +9,7 @@ const Login: React.FC = () => {
   });
 
   const [error, setError] = useState("");
+  const navigate = useNavigate(); 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,8 +26,10 @@ const Login: React.FC = () => {
         formData
       );
       console.log("Login exitoso", response.data);
+
       localStorage.setItem("token", response.data.token);
-      alert("inicio de sesión exitoso");
+
+      navigate("/dashboard");
     } catch (error: any) {
       console.error(
         "Error al iniciar sesión",
@@ -34,6 +38,7 @@ const Login: React.FC = () => {
       setError(error.response?.data?.message || "Error al iniciar sesión");
     }
   };
+
   return (
     <div className="h-screen flex justify-center items-center bg-gray-100">
       <form className="bg-white p-6 rounded shadow-md" onSubmit={handleSubmit}>

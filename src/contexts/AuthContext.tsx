@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await api.get("/user/profile");
+        const response = await api.get("/user");
         setUser(response.data.user);
       } catch (error) {
         console.error("Error fething the user:", error);
@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const login = async (token: string) => {
     try {
-      const response = await api.get("/user/profile");
+      const response = await api.get("/user");
       setUser(response.data.user);
     } catch (error) {
       console.error("Error while trying to log in:", error);
