@@ -3,6 +3,10 @@ import { useAuth } from "../contexts/AuthContext";
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
 
+  if (!user) {
+    return <p>Cargando...</p>;
+  }
+
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-md text-center">
