@@ -26,9 +26,7 @@ const Login: React.FC = () => {
         formData
       );
       console.log("Login exitoso", response.data);
-
-      localStorage.setItem("token", response.data.token);
-
+      
       navigate("/dashboard");
     } catch (error: any) {
       console.error(
