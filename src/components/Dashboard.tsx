@@ -1,10 +1,10 @@
 import { useAuth } from "../hooks/useAuth";
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Usar el contexto para obtener el usuario
 
   if (!user) {
-    return <p>Cargando...</p>;
+    return <p>No estás identificado correctamente</p>;
   }
 
   return (
@@ -14,16 +14,13 @@ const Dashboard: React.FC = () => {
         <p className="text-lg mb-6">Hola, {user.name || "User"}!</p>
         <div className="text-left">
           <p>
-            <strong>Nombre:</strong>
-            {user?.name}
+            <strong>Nombre:</strong> {user.name || "N/A"}
           </p>
           <p>
-            <strong>Apellido:</strong>
-            {user?.surname}
+            <strong>Apellido:</strong> {user.surname || "N/A"}
           </p>
           <p>
-            <strong>Correo electrónico:</strong>
-            {user?.email}
+            <strong>Correo electrónico:</strong> {user.email || "N/A"}
           </p>
         </div>
       </div>

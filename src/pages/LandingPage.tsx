@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleStartNow = () => {
-    navigate("/login"); // Redirige al login (o cambia a "/register" si es necesario)
-  };
+  
 
   return (
     <div className="bg-gray-100">
@@ -34,12 +32,7 @@ const LandingPage: React.FC = () => {
         <p className="text-lg text-gray-700 mb-6 text-center px-4">
           Record, analyze and improve your employees' morale.
         </p>
-        <button
-          onClick={handleStartNow}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-lg"
-        >
-          Start Now
-        </button>
+
       </section>
 
       <section className="p-8 bg-white">
