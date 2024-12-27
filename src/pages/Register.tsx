@@ -8,6 +8,9 @@ const Register: React.FC = () => {
     confirmPassword: "",
     name: "",
     surname: "",
+    companyName:"",
+    teamName:"",
+    employeeRole:"",
     role: "user",
   });
 
@@ -37,6 +40,9 @@ const Register: React.FC = () => {
         password: formData.password,
         name: formData.name,
         surname: formData.surname,
+        companyName: formData.companyName,
+        teamName: formData.teamName,
+        employeeRole: formData.employeeRole,
         role: formData.role,
       });
       console.log("Usuario registrado", response.data);
@@ -103,15 +109,33 @@ const Register: React.FC = () => {
           required
           className="w-full p-2 mb-4 border rounded"
         />
-        <select
-          name="role"
-          value={formData.role}
+        <input
+          type="text"
+          name="companyName"
+          placeholder="Nombre de la Empresa"
+          value={formData.companyName}
           onChange={handleInputChange}
+          required
           className="w-full p-2 mb-4 border rounded"
-        >
-          <option value="user">Usuario</option>
-          <option value="manager">Manager</option>
-        </select>
+        />
+        <input
+          type="text"
+          name="teamName"
+          placeholder="Nombre del Equipo"
+          value={formData.teamName}
+          onChange={handleInputChange}
+          required
+          className="w-full p-2 mb-4 border rounded"
+        />
+        <input
+          type="text"
+          name="employeeRole"
+          placeholder="Rol dentro de la Empresa"
+          value={formData.employeeRole}
+          onChange={handleInputChange}
+          required
+          className="w-full p-2 mb-4 border rounded"
+        />
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded"
