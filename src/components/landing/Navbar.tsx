@@ -1,4 +1,4 @@
-import { Smile } from "lucide-react";
+import { Smile, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
@@ -14,15 +14,17 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-8">
             <a
               href="#features"
-              className="text-blue-100 hover:text-white transition-colors"
+              className="flex items-center text-blue-100 hover:text-white transition-colors"
             >
               Features
+              <ChevronRight className="ml-2"/>
             </a>
             <a
               href="#pricing"
-              className="text-blue-100 hover:text-white transition-colors"
+              className="flex items-center text-blue-100 hover:text-white transition-colors"
             >
               Pricing
+              <ChevronRight className="ml-2"/>
             </a>
           </div>
 
