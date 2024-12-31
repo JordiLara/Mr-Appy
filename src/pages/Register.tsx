@@ -1,149 +1,155 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { Mail, Lock, User, Building2, Users, Briefcase } from "lucide-react";
+import AuthLayout from "../auth/AuthLayout";
+import FormInput from "../components/FormInput";
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     name: "",
     surname: "",
-    companyName:"",
-    teamName:"",
-    employeeRole:"",
+    companyName: "",
+    teamName: "",
+    employeeRole: "",
     role: "user",
   });
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
+  const handleInputChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
 
     if (formData.password !== formData.confirmPassword) {
       setError("Las contraseñas no coinciden");
+      setIsLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/auth/register", {
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        surname: formData.surname,
-        companyName: formData.companyName,
-        teamName: formData.teamName,
-        employeeRole: formData.employeeRole,
-        role: formData.role,
-      });
-      console.log("Usuario registrado", response.data);
+      await axios.post("http://localhost:3000/auth/register", formData);
       setSuccess("Usuario registrado correctamente");
-      setError(""); 
-    } catch (error: any) {
-      console.error(
-        "Error al registrar usuario",
-        error.response?.data || error.message
-      );
-      setError(error.response?.data?.message || "Error al registrar usuario");
-      setSuccess(""); 
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Error al registrar usuario");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100">
-      <form className="bg-white p-6 rounded shadow-md" onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold mb-4">Register</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
-        <input
-          type="email"
-          name="email"
-          placeholder="Correo Electrónico"
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirma tu Contraseña"
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={formData.name}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="text"
-          name="surname"
-          placeholder="Apellido"
-          value={formData.surname}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="text"
-          name="companyName"
-          placeholder="Nombre de la Empresa"
-          value={formData.companyName}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="text"
-          name="teamName"
-          placeholder="Nombre del Equipo"
-          value={formData.teamName}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
-        <input
-          type="text"
-          name="employeeRole"
-          placeholder="Rol dentro de la Empresa"
-          value={formData.employeeRole}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
-        />
+    <AuthLayout title="Crear cuenta de Manager">
+      {error && (
+        <div className="bg-red-500/10 text-red-100 p-4 rounded-lg mb-6">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="bg-green-500/10 text-green-100 p-4 rounded-lg mb-6">
+          {success}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <FormInput
+            name="name"
+            type="text"
+            placeholder="Nombre"
+            value={formData.name}
+            onChange={handleInputChange}
+            icon={User}
+          />
+          <FormInput
+            name="surname"
+            type="text"
+            placeholder="Apellido"
+            value={formData.surname}
+            onChange={handleInputChange}
+            icon={User}
+          />
+          <FormInput
+            name="email"
+            type="email"
+            placeholder="Correo Electrónico"
+            value={formData.email}
+            onChange={handleInputChange}
+            icon={Mail}
+          />
+          <FormInput
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            value={formData.password}
+            onChange={handleInputChange}
+            icon={Lock}
+          />
+          <FormInput
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirmar Contraseña"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            icon={Lock}
+          />
+          <FormInput
+            name="companyName"
+            type="text"
+            placeholder="Nombre de la Empresa"
+            value={formData.companyName}
+            onChange={handleInputChange}
+            icon={Building2}
+          />
+          <FormInput
+            name="teamName"
+            type="text"
+            placeholder="Nombre del Equipo"
+            value={formData.teamName}
+            onChange={handleInputChange}
+            icon={Users}
+          />
+          <FormInput
+            name="employeeRole"
+            type="text"
+            placeholder="Rol en la Empresa"
+            value={formData.employeeRole}
+            onChange={handleInputChange}
+            icon={Briefcase}
+          />
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
+          disabled={isLoading}
+          className="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg
+            transition-colors disabled:opacity-50 mt-8"
         >
-          Registrarse
+          {isLoading ? "Registrando..." : "Crear cuenta"}
         </button>
       </form>
-    </div>
+
+      <p className="mt-6 text-center text-sm text-white">
+        ¿Ya tienes una cuenta?{" "}
+        <Link
+          to="/login"
+          className="text-yellow-400 hover:text-yellow-300 font-medium"
+        >
+          Inicia sesión
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };
 

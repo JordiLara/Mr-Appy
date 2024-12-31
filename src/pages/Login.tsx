@@ -1,74 +1,81 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
+import AuthLayout from "../auth/AuthLayout";
+import FormInput from "../components/FormInput";
 
-const Login: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const navigate = useNavigate(); 
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
+  const handleInputChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
     try {
-      const response = await axios.post(
-        "http://localhost:3000/auth/login",
-        formData
-      );
-      console.log("Login exitoso", response.data);
-      
+      await login(formData);
       navigate("/dashboard");
-    } catch (error: any) {
-      console.error(
-        "Error al iniciar sesión",
-        error.response?.data || error.message
-      );
-      setError(error.response?.data?.message || "Error al iniciar sesión");
+    } catch (err: any) {
+      setError(err.message || "Error al iniciar sesión");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100">
-      <form className="bg-white p-6 rounded shadow-md" onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold mb-4">Iniciar sesión</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <input
-          type="email"
+    <AuthLayout title="Bienvenido de nuevo">
+      {error && (
+        <div className="bg-red-500/10 text-red-100 p-4 rounded-lg mb-6">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormInput
           name="email"
+          type="email"
           placeholder="Correo Electrónico"
           value={formData.email}
           onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
+          icon={Mail}
         />
-        <input
-          type="password"
+        <FormInput
           name="password"
+          type="password"
           placeholder="Contraseña"
           value={formData.password}
           onChange={handleInputChange}
-          required
-          className="w-full p-2 mb-4 border rounded"
+          icon={Lock}
         />
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
+          disabled={isLoading}
+          className="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg 
+            transition-colors disabled:opacity-50 mt-8"
         >
-          Iniciar Sesión
+          {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
         </button>
       </form>
-    </div>
-  );
-};
 
-export default Login;
+      <p className="mt-6 text-center text-sm text-white">
+        ¿No tienes una cuenta?{" "}
+        <Link
+          to="/register"
+          className="text-yellow-400 hover:text-yellow-300 font-medium"
+        >
+          Regístrate aquí
+        </Link>
+      </p>
+    </AuthLayout>
+  );
+}
