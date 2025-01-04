@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Dashboard from "../pages/EditTeamAndInvites";
+import TeamInvites from "../pages/TeamInvites";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -11,14 +11,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route
-        path="/dashboard"
-        element={
-          //<ProtectedRoute>
-            <Dashboard />
-          //</ProtectedRoute>
-        }
-      />
+      <Route path="/teaminvites" element={<TeamInvites />} />
     </Routes>
   );
 };

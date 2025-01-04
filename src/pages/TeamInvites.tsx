@@ -7,7 +7,7 @@ interface TeamData {
   teamName: string;
 }
 
-export default function TeamCreation() {
+export default function TeamInvites() {
   const navigate = useNavigate();
   const [teamData, setTeamData] = useState<TeamData>({
     companyName: "Example Company", // This would come from registration
