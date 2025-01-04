@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import ProtectedRoute from "../routes/ProtectedRoute";
+//import ProtectedRoute from "../routes/ProtectedRoute";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../pages/EditTeamAndInvites";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -14,9 +14,9 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          //<ProtectedRoute>
             <Dashboard />
-          </ProtectedRoute>
+          //</ProtectedRoute>
         }
       />
     </Routes>
