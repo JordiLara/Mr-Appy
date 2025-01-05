@@ -4,6 +4,7 @@ import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import TeamInvites from "../pages/TeamInvites";
+import ManagerHome from "../pages/managerScreen/ManagerHome";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/teaminvites" element={<TeamInvites />} />
+      <Route path="/manager" element={<ManagerHome />} />
     </Routes>
   );
 };
