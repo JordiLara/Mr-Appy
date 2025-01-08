@@ -6,6 +6,7 @@ import Register from "../pages/Register";
 import ManagerLayout from "../components/layout/ManagerLayout";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import TeamInvites from "../pages/manager/TeamInvites";
+import ManagerTeam from "../pages/manager/ManagerTeam";
 import Activity from "../pages/Activity";
 import MainLayout from "../components/layout/MainLayout";
 import Calendar from "../pages/Calendar";
@@ -28,8 +29,12 @@ const AppRoutes: React.FC = () => {
       </Route>
       {/* Manager protected routes */}
       <Route path="/" element={<ManagerLayout />}>
-        <Route path="/teaminvites" element={<TeamInvites />} />
-        <Route path="/manager" element={<ManagerDashboard />} />
+        <Route path="/manager/teaminvites" element={<TeamInvites />} />
+        <Route
+          path="/manager/managerdashboard"
+          element={<ManagerDashboard />}
+        />
+        <Route path="/manager/team" element={<ManagerTeam />} />
       </Route>
     </Routes>
   );
