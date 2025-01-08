@@ -4,17 +4,15 @@ export default function ManagerDashboard() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold text-gray-900">Team Dashboard</h1>
-        <p className="text-gray-600">
-          Monitor your team's mood and performance
-        </p>
+        <h1 className="text-2xl font-bold text-gray-900">Manager Dashboard</h1>
+        <p className="text-gray-600">Monitor your team's overall performance</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           {
             icon: BarChart2,
-            title: "Average Mood",
+            title: "Team Mood Average",
             value: "4.2/5",
             trend: "+0.3",
             color: "bg-blue-100 text-blue-600",
@@ -35,7 +33,7 @@ export default function ManagerDashboard() {
           },
           {
             icon: Calendar,
-            title: "Entries This Week",
+            title: "Weekly Entries",
             value: "45",
             trend: "+12",
             color: "bg-yellow-100 text-yellow-600",
@@ -64,14 +62,18 @@ export default function ManagerDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Mood Trends</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">
+            Team Mood Trends
+          </h2>
           <div className="h-64 flex items-center justify-center text-gray-500">
             Chart placeholder
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Top Concerns</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">
+            Top Team Concerns
+          </h2>
           <div className="space-y-4">
             {[
               { label: "Workload", value: 45 },

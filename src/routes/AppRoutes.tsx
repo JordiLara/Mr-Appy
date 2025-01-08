@@ -3,8 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import TeamInvites from "../pages/managerScreen/TeamInvites";
-import ManagerHome from "../pages/managerScreen/ManagerHome";
+import ManagerLayout from "../components/layout/ManagerLayout";
+import ManagerDashboard from "../pages/manager/ManagerDashboard";
+import TeamInvites from "../pages/manager/TeamInvites";
 import Activity from "../pages/Activity";
 import MainLayout from "../components/layout/MainLayout";
 import Calendar from "../pages/Calendar";
@@ -20,14 +21,16 @@ const AppRoutes: React.FC = () => {
       <Route path="/register" element={<Register />} />
       {/* Protected routes with MainLayout */}
       <Route path="/" element={<MainLayout />}>
-        <Route path="/activity" element={<Activity />} /> {/*might change that path name*/}
+        <Route path="/activity" element={<Activity />} />{" "}
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/team" element={<Team />} />
       </Route>
-      {/* Other standalone routes */}
-      <Route path="/teaminvites" element={<TeamInvites />} />
-      <Route path="/manager" element={<ManagerHome />} />
+      {/* Manager protected routes */}
+      <Route path="/" element={<ManagerLayout />}>
+        <Route path="/teaminvites" element={<TeamInvites />} />
+        <Route path="/manager" element={<ManagerDashboard />} />
+      </Route>
     </Routes>
   );
 };
