@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import TeamInvites from "../pages/TeamInvites";
+import TeamInvites from "../pages/managerScreen/TeamInvites";
 import ManagerHome from "../pages/managerScreen/ManagerHome";
 import Activity from "../pages/Activity";
 import MainLayout from "../components/layout/MainLayout";

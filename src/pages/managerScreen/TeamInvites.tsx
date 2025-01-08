@@ -1,22 +1,80 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Mail, Building2, Users, Copy, CheckCircle } from "lucide-react";
+import {
+  Building2,
+  Users,
+  Copy,
+  CheckCircle,
+  MessageSquare,
+  Video,
+  Slack,
+  Mail,
+  MessageCircle,
+} from "lucide-react";
 
 interface TeamData {
   companyName: string;
   teamName: string;
 }
 
+interface ShareOption {
+  name: string;
+  icon: React.ElementType;
+  color: string;
+  onClick: (link: string) => void;
+}
+
 export default function TeamInvites() {
-  const navigate = useNavigate();
   const [teamData, setTeamData] = useState<TeamData>({
-    companyName: "Example Company", // This would come from registration
-    teamName: "Development Team", // This would come from registration
+    companyName: "Example Company",
+    teamName: "Development Team",
   });
-  const [emails, setEmails] = useState<string>("");
   const [inviteLink, setInviteLink] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  const shareOptions: ShareOption[] = [
+    {
+      name: "Discord",
+      icon: MessageSquare,
+      color: "bg-indigo-500 hover:bg-indigo-600",
+      onClick: (link) =>
+        window.open(
+          `https://discord.com/share?url=${encodeURIComponent(link)}`
+        ),
+    },
+    {
+      name: "Slack",
+      icon: Slack,
+      color: "bg-green-600 hover:bg-green-700",
+      onClick: (link) =>
+        window.open(`https://slack.com/share?url=${encodeURIComponent(link)}`),
+    },
+    {
+      name: "Google Meet",
+      icon: Video,
+      color: "bg-red-500 hover:bg-red-600",
+      onClick: (link) =>
+        window.open(
+          `https://meet.google.com/new?url=${encodeURIComponent(link)}`
+        ),
+    },
+    {
+      name: "Teams",
+      icon: MessageCircle,
+      color: "bg-blue-600 hover:bg-blue-700",
+      onClick: (link) =>
+        window.open(
+          `https://teams.microsoft.com/share?url=${encodeURIComponent(link)}`
+        ),
+    },
+    {
+      name: "Email",
+      icon: Mail,
+      color: "bg-gray-600 hover:bg-gray-700",
+      onClick: (link) =>
+        window.open(`mailto:?body=${encodeURIComponent(link)}`),
+    },
+  ];
 
   const handleTeamDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamData({
@@ -26,7 +84,6 @@ export default function TeamInvites() {
   };
 
   const handleGenerateInvite = () => {
-    // This would actually generate a real invite link
     setInviteLink(
       `https://mrappy.com/invite/${Math.random().toString(36).substring(7)}`
     );
@@ -38,21 +95,12 @@ export default function TeamInvites() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSendInvites = () => {
-    // This would actually send the invites
-    console.log(
-      "Sending invites to:",
-      emails.split(",").map((email) => email.trim())
-    );
-    navigate("/dashboard");
-  };
-
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-900">Set Up Your Team</h1>
         <p className="mt-2 text-gray-600">
-          Review your team details and invite team members
+          Review your team details and share the invite link
         </p>
       </div>
 
@@ -121,33 +169,18 @@ export default function TeamInvites() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-blue-500" />
-            Invite Team Members
+            Share Invite Link
           </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Addresses
-            </label>
-            <textarea
-              value={emails}
-              onChange={(e) => setEmails(e.target.value)}
-              placeholder="Enter email addresses separated by commas"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              rows={3}
-            />
-          </div>
-
-          {!inviteLink && (
+          {!inviteLink ? (
             <button
               onClick={handleGenerateInvite}
               className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Generate Invite Link
             </button>
-          )}
-
-          {inviteLink && (
-            <div className="space-y-4">
+          ) : (
+            <div className="space-y-6">
               <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                 <input
                   type="text"
@@ -168,13 +201,24 @@ export default function TeamInvites() {
                 </button>
               </div>
 
-              <button
-                onClick={handleSendInvites}
-                className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <Mail className="w-5 h-5" />
-                Send Invites & Continue
-              </button>
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  Share via:
+                </h3>
+                <div className="grid grid-cols-4 gap-3">
+                  {shareOptions.map((option) => (
+                    <button
+                      key={option.name}
+                      onClick={() => option.onClick(inviteLink)}
+                      className={`${option.color} text-white p-3 rounded-lg transition-colors
+                        flex flex-col items-center gap-2`}
+                    >
+                      <option.icon className="w-5 h-5" />
+                      <span className="text-xs font-medium">{option.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
