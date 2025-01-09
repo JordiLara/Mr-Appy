@@ -5,7 +5,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import api from "../utils/api";
+import api from "../services/api";
 
 interface AuthContextType {
   user: any;
