@@ -1,5 +1,5 @@
 import api from "./config";
-import { Team } from "../types";
+import { Team } from "../../types";
 
 export const teamService = {
   // Create a new team

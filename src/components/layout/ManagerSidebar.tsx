@@ -11,7 +11,7 @@ import {
   UserPlus,
   Settings,
 } from "lucide-react";
-import { userService } from "../../services";
+import { userService } from "../../services/api";
 
 export default function ManagerSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);

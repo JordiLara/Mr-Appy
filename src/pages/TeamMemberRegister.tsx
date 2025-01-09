@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Mail, Lock, User, Briefcase } from "lucide-react";
 import AuthLayout from "../auth/AuthLayout";
 import FormInput from "../components/FormInput";
-import { teamService } from "../services/teamService";
+import { teamService } from "../services/api/teamService";
 
 interface TeamMemberFormData {
   email: string;

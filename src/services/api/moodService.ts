@@ -1,5 +1,5 @@
 import api from "./config";
-import { Mood } from "../types";
+import { Mood } from "../../types";
 
 export const moodService = {
   // Create a new mood entry

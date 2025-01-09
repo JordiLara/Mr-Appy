@@ -11,7 +11,7 @@ import {
   Smile,
   Settings,
 } from "lucide-react";
-import { userService } from "../../services";
+import { userService } from "../../services/api";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);

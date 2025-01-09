@@ -1,5 +1,5 @@
 import api from "./config";
-import { User } from "../types";
+import { User } from "../../types";
 
 export const userService = {
   // Get current user profile
