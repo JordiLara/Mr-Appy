@@ -1,35 +1,29 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  ReactNode,
-} from "react";
-import api from "../services/api";
+import React, { createContext, useState, useEffect, useCallback } from "react";
+import { User, LoginCredentials } from "../types/typesAuth";
+import { authService } from "../services/authService";
 
 interface AuthContextType {
-  user: any;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  logout: () => void;
+  user: User | null;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<any>(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await api.get("/user");
-      console.log("User from auth: ", user);
-      setUser(response.data.user);
+      const user = await authService.getCurrentUser();
+      setUser(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -37,30 +31,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     fetchUser();
   }, [fetchUser]);
 
-  const login = async (credentials: { email: string; password: string }) => {
+  const login = async (credentials: LoginCredentials) => {
     try {
-      await api.post("/auth/login", credentials);
-      await fetchUser();
+      const user = await authService.login(credentials);
+      setUser(user);
     } catch (error) {
       console.error("Error during login:", error);
-      throw new Error("Login failed");
+      throw error;
     }
   };
 
   const logout = async () => {
     try {
-      await api.get("/auth/logout");
+      await authService.logout();
       setUser(null);
     } catch (error) {
       console.error("Error during logout:", error);
+      throw error;
     }
   };
 
-  console.log("User from auth: ", user);
-
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
