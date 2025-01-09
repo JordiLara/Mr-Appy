@@ -1,34 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
-  BarChart2,
   MessageSquare,
   LogOut,
   ChevronLeft,
   ChevronRight,
   Briefcase,
   UserPlus,
+  Settings,
 } from "lucide-react";
+import { userService } from "../../services";
 
 export default function ManagerSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ name: string } | null>(null);
   const location = useLocation();
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await userService.getCurrentUser();
+        setUserProfile(profile);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const navItems = [
-    {
-      path: "/manager/managerdashboard",
-      icon: LayoutDashboard,
-      label: "Dashboard",
-    },
-    {
-      path: "/manager/teaminvites",
-      icon: UserPlus,
-      label: "Invitar Equipo",
-    },
-    { path: "/manager/managerteam", icon: Users, label: "Equipo" },
-    { path: "/manager/analytics", icon: BarChart2, label: "Análisis" },
+    { path: "/manager/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/manager/team/invite", icon: UserPlus, label: "Invitar Equipo" },
+    { path: "/manager/team", icon: Users, label: "Equipo" },
+    //{ path: "/manager/analytics", icon: BarChart2, label: "Análisis" },
     { path: "/manager/reviews", icon: MessageSquare, label: "Reviews" },
   ];
 
@@ -49,10 +56,17 @@ export default function ManagerSidebar() {
         )}
       </button>
 
-      {/* Logo */}
-      <div className="p-6 flex items-center gap-3">
-        <Briefcase className="w-8 h-8 text-yellow-400 flex-shrink-0" />
-        {!isCollapsed && <span className="text-xl font-bold">Manager</span>}
+      {/* Logo and User Info */}
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-2">
+          <Briefcase className="w-8 h-8 text-yellow-400 flex-shrink-0" />
+          {!isCollapsed && <span className="text-xl font-bold">Manager</span>}
+        </div>
+        {!isCollapsed && userProfile && (
+          <p className="text-sm text-indigo-100">
+            Bienvenido, {userProfile.name}
+          </p>
+        )}
       </div>
 
       {/* Navigation */}
@@ -74,8 +88,15 @@ export default function ManagerSidebar() {
         ))}
       </nav>
 
-      {/* Logout */}
-      <div className="absolute bottom-0 left-0 right-0 p-6">
+      {/* Settings and Logout */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
+        <Link
+          to="/settings"
+          className="flex items-center gap-3 text-indigo-200 hover:text-white transition-colors"
+        >
+          <Settings className="w-6 h-6 flex-shrink-0" />
+          {!isCollapsed && <span>Ajustes</span>}
+        </Link>
         <Link
           to="/logout"
           className="flex items-center gap-3 text-indigo-200 hover:text-white transition-colors"
