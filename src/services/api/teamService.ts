@@ -1,6 +1,15 @@
 import api from "./config";
 import { Team } from "../../types";
 
+interface TeamMemberRegistration {
+  email: string;
+  password: string;
+  name: string;
+  surname: string;
+  employeeRole: string;
+  role: "manager" | "employee";
+}
+
 export const teamService = {
   // Create a new team
   create: async (data: Omit<Team, "id">) => {
@@ -26,11 +35,12 @@ export const teamService = {
     return response.data;
   },
 
-  // Accept team invitation
-  acceptInvite: async (inviteToken: string) => {
-    const response = await api.post(`/teams/invite/accept`, {
-      token: inviteToken,
-    });
+  // Accept team invitation and register new member
+  acceptInvite: async (
+    teamId: string,
+    registrationData: TeamMemberRegistration
+  ) => {
+    const response = await api.post(`/teams/${teamId}/join`, registrationData);
     return response.data;
   },
 
