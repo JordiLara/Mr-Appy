@@ -32,9 +32,9 @@ export default function ManagerSidebar() {
   }, []);
 
   const navItems = [
-    { path: "/manager/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/manager/team/invite", icon: UserPlus, label: "Invitar Equipo" },
-    { path: "/manager/team", icon: Users, label: "Equipo" },
+    { path: "/manager/managerdashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/manager/teaminvites", icon: UserPlus, label: "Invitar Equipo" },
+    { path: "/manager/managerteam", icon: Users, label: "Equipo" },
     //{ path: "/manager/analytics", icon: BarChart2, label: "Análisis" },
     { path: "/manager/reviews", icon: MessageSquare, label: "Reviews" },
   ];
