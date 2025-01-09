@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./config";
 import { Mood } from "../types";
 
 export const moodService = {

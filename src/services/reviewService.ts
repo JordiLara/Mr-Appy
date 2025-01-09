@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./config";
 
 export const reviewService = {
   // Get team reviews

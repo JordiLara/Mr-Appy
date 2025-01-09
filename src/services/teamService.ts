@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./config";
 import { Team } from "../types";
 
 export const teamService = {
