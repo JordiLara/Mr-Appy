@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { moodService } from "../services/moodService";
 
 const moods = [
   {
@@ -9,6 +10,7 @@ const moods = [
     color: "text-red-500",
     bg: "bg-red-100",
     label: "Muy mal",
+    type: "rough",
   },
   {
     id: 2,
@@ -16,6 +18,7 @@ const moods = [
     color: "text-orange-500",
     bg: "bg-orange-100",
     label: "Mal",
+    type: "down",
   },
   {
     id: 3,
@@ -23,6 +26,7 @@ const moods = [
     color: "text-yellow-500",
     bg: "bg-yellow-100",
     label: "Regular",
+    type: "neutral",
   },
   {
     id: 4,
@@ -30,6 +34,7 @@ const moods = [
     color: "text-green-500",
     bg: "bg-green-100",
     label: "Bien",
+    type: "good",
   },
   {
     id: 5,
@@ -37,14 +42,16 @@ const moods = [
     color: "text-emerald-500",
     bg: "bg-emerald-100",
     label: "Muy bien",
+    type: "amazing",
   },
 ];
 
 type MoodEntry = {
-  date: Date;
-  mood: number;
+  id: string;
+  created_at: string;
+  mood_type: string;
   note: string;
-  isPrivate: boolean;
+  is_anonymous: boolean;
 };
 
 export default function Activity() {
@@ -52,22 +59,57 @@ export default function Activity() {
   const [note, setNote] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [entries, setEntries] = useState<MoodEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
+  const fetchEntries = async () => {
+    try {
+      const response = await moodService.getUserMoods();
+      setEntries(response);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Error al cargar los estados de ánimo"
+      );
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMood) return;
 
-    const newEntry = {
-      date: new Date(),
-      mood: selectedMood,
-      note,
-      isPrivate,
-    };
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
 
-    setEntries([newEntry, ...entries]);
-    setSelectedMood(null);
-    setNote("");
-    setIsPrivate(false);
+    try {
+      const selectedMoodData = moods[selectedMood - 1];
+      await moodService.create({
+        mood_type: selectedMoodData.type,
+        note,
+        is_anonymous: isPrivate,
+      });
+
+      setSuccess("¡Estado de ánimo registrado correctamente!");
+      setSelectedMood(null);
+      setNote("");
+      setIsPrivate(false);
+      fetchEntries();
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Error al guardar el estado de ánimo"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getMoodFromType = (type: string) => {
+    return moods.find((mood) => mood.type === type) || moods[2];
   };
 
   return (
@@ -78,6 +120,18 @@ export default function Activity() {
             localStorage.getItem("userName") || "Usuario"
           }, ¿cómo ha ido hoy el día?`}
         </h2>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-md">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 p-3 bg-green-50 text-green-600 rounded-md">
+            {success}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -132,41 +186,39 @@ export default function Activity() {
 
             <button
               type="submit"
-              disabled={!selectedMood}
+              disabled={!selectedMood || isLoading}
               className="px-6 py-2 bg-blue-500 text-white rounded-lg font-medium
                 disabled:opacity-50 disabled:cursor-not-allowed
                 hover:bg-blue-600 transition-colors"
             >
-              Enviar estado
+              {isLoading ? "Enviando..." : "Enviar estado"}
             </button>
           </div>
         </form>
       </div>
 
-      {entries.map((entry, index) => (
-        <div key={index} className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-lg font-semibold">
-              {format(entry.date, "EEEE, d 'de' MMMM", { locale: es })}
-            </h3>
-            <button className="text-blue-500 hover:text-blue-600">
-              Editar
-            </button>
-          </div>
-          <div className="flex gap-2 mb-4">
-            {moods.map((mood) => (
+      {entries.map((entry) => {
+        const moodData = getMoodFromType(entry.mood_type);
+        return (
+          <div key={entry.id} className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-semibold">
+                {format(new Date(entry.created_at), "EEEE, d 'de' MMMM", {
+                  locale: es,
+                })}
+              </h3>
+            </div>
+            <div className="flex gap-2 mb-4">
               <div
-                key={mood.id}
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-xl
-                  ${entry.mood === mood.id ? mood.bg : "bg-gray-100"}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${moodData.bg}`}
               >
-                {mood.emoji}
+                {moodData.emoji}
               </div>
-            ))}
+            </div>
+            {entry.note && <p className="text-gray-600">«{entry.note}»</p>}
           </div>
-          {entry.note && <p className="text-gray-600">«{entry.note}»</p>}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
