@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService, userService } from "../services/api";
+import { moodService } from "../services/api";
+
+type MoodEntry = {
+  id: string;
+  created_at: string;
+  mood_type: "amazing" | "good" | "neutral" | "down" | "rough";
+  note: string;
+  is_anonymous: boolean;
+};
 
 const moods = [
   {
@@ -10,7 +18,7 @@ const moods = [
     color: "text-red-500",
     bg: "bg-red-100",
     label: "Muy mal",
-    type: "rough",
+    type: "rough" as const,
   },
   {
     id: 2,
@@ -18,7 +26,7 @@ const moods = [
     color: "text-orange-500",
     bg: "bg-orange-100",
     label: "Mal",
-    type: "down",
+    type: "down" as const,
   },
   {
     id: 3,
@@ -26,7 +34,7 @@ const moods = [
     color: "text-yellow-500",
     bg: "bg-yellow-100",
     label: "Regular",
-    type: "neutral",
+    type: "neutral" as const,
   },
   {
     id: 4,
@@ -34,7 +42,7 @@ const moods = [
     color: "text-green-500",
     bg: "bg-green-100",
     label: "Bien",
-    type: "good",
+    type: "good" as const,
   },
   {
     id: 5,
@@ -42,22 +50,9 @@ const moods = [
     color: "text-emerald-500",
     bg: "bg-emerald-100",
     label: "Muy bien",
-    type: "amazing",
+    type: "amazing" as const,
   },
 ];
-
-type MoodEntry = {
-  id: string;
-  created_at: string;
-  mood_type: string;
-  note: string;
-  is_anonymous: boolean;
-};
-
-type UserProfile = {
-  name: string;
-  email: string;
-};
 
 export default function Activity() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
@@ -67,67 +62,9 @@ export default function Activity() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [entriesResponse, profileResponse] = await Promise.all([
-          moodService.getUserMoods(),
-          userService.getCurrentUser(),
-        ]);
-        setEntries(entriesResponse);
-        setUserProfile(profileResponse);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Error al cargar los datos");
-        // Datos de respaldo en caso de error
-        const today = new Date();
-        const backupData: MoodEntry[] = [
-          {
-            id: "1",
-            created_at: subDays(today, 4).toISOString(),
-            mood_type: "amazing",
-            note: "¡Gran día! Completé todas las tareas pendientes y tuve una reunión muy productiva con el equipo.",
-            is_anonymous: false,
-          },
-          {
-            id: "2",
-            created_at: subDays(today, 3).toISOString(),
-            mood_type: "good",
-            note: "Buen avance en el proyecto principal. El equipo está muy motivado.",
-            is_anonymous: false,
-          },
-          {
-            id: "3",
-            created_at: subDays(today, 2).toISOString(),
-            mood_type: "neutral",
-            note: "Día normal, trabajando en las tareas habituales.",
-            is_anonymous: false,
-          },
-          {
-            id: "4",
-            created_at: subDays(today, 1).toISOString(),
-            mood_type: "down",
-            note: "Algunas dificultades técnicas ralentizaron el trabajo hoy.",
-            is_anonymous: true,
-          },
-          {
-            id: "5",
-            created_at: today.toISOString(),
-            mood_type: "good",
-            note: "Resolvimos los problemas de ayer y el proyecto está de nuevo en marcha.",
-            is_anonymous: false,
-          },
-        ];
-        setEntries(backupData);
-        setUserProfile({
-          name: "Usuario",
-          email: "usuario@example.com",
-        });
-      }
-    };
-
-    fetchData();
+    fetchEntries();
   }, []);
 
   const fetchEntries = async () => {
@@ -155,6 +92,7 @@ export default function Activity() {
         mood_type: selectedMoodData.type,
         note,
         is_anonymous: isPrivate,
+        created_at: new Date().toISOString(),
       });
 
       setSuccess("¡Estado de ánimo registrado correctamente!");
@@ -179,9 +117,9 @@ export default function Activity() {
     <div className="max-w-3xl mx-auto space-y-8 p-6">
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-2xl font-bold text-blue-900 mb-6">
-          {userProfile
-            ? `${userProfile.name}, ¿cómo ha ido hoy el día?`
-            : "¿Cómo ha ido hoy el día?"}
+          {`${
+            localStorage.getItem("userName") || "Usuario"
+          }, ¿cómo ha ido hoy el día?`}
         </h2>
 
         {error && (

@@ -1,10 +1,4 @@
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  surname: string;
-  role: "manager" | "employee";
-}
+export * from "./typesAuth";
 
 export interface Team {
   id: string;
@@ -22,9 +16,10 @@ export interface CreateTeamResponse {
 
 export interface Mood {
   id: number;
-  name: string;
-  icon: keyof typeof import("lucide-react");
-  color: string;
+  mood_type: "amazing" | "good" | "neutral" | "down" | "rough";
+  note?: string;
+  is_anonymous: boolean;
+  created_at: string;
 }
 
 export interface Activity {
