@@ -73,7 +73,7 @@ export default function TeamMemberRegister() {
 
       const { confirmPassword, ...registrationData } = formData;
 
-      await teamService.acceptInvite(teamId, {
+      await teamService.registerMember(teamId, {
         ...registrationData,
         role: "employee",
       });
