@@ -27,7 +27,7 @@ export default function ManagerSidebar() {
       icon: UserPlus,
       label: "Invitar Equipo",
     },
-    { path: "/manager/team", icon: Users, label: "Equipo" },
+    { path: "/manager/managerteam", icon: Users, label: "Equipo" },
     { path: "/manager/analytics", icon: BarChart2, label: "Análisis" },
     { path: "/manager/reviews", icon: MessageSquare, label: "Reviews" },
   ];

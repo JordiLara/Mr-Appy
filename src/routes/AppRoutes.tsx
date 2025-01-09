@@ -12,6 +12,7 @@ import MainLayout from "../components/layout/MainLayout";
 import Calendar from "../pages/Calendar";
 import Stats from "../pages/Stats";
 import Team from "../pages/Team";
+import Reviews from "../pages/manager/Reviews";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -34,7 +35,8 @@ const AppRoutes: React.FC = () => {
           path="/manager/managerdashboard"
           element={<ManagerDashboard />}
         />
-        <Route path="/manager/team" element={<ManagerTeam />} />
+        <Route path="/manager/managerteam" element={<ManagerTeam />} />
+        <Route path="/manager/reviews" element={<Reviews />} />
       </Route>
     </Routes>
   );
