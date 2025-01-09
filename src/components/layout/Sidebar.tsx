@@ -1,5 +1,4 @@
-import React,
- { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
@@ -10,11 +9,27 @@ import {
   ChevronLeft,
   ChevronRight,
   Smile,
+  Settings,
 } from "lucide-react";
+import { userService } from "../../services";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ name: string } | null>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await userService.getCurrentUser();
+        setUserProfile(profile);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const navItems = [
     { path: "/activity", icon: Home, label: "Actividad" },
@@ -40,10 +55,17 @@ export default function Sidebar() {
         )}
       </button>
 
-      {/* Logo */}
-      <div className="p-6 flex items-center gap-3">
-        <Smile className="w-8 h-8 text-yellow-400 flex-shrink-0" />
-        {!isCollapsed && <span className="text-xl font-bold">MrAppy</span>}
+      {/* Logo and User Info */}
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-2">
+          <Smile className="w-8 h-8 text-yellow-400 flex-shrink-0" />
+          {!isCollapsed && <span className="text-xl font-bold">MrAppy</span>}
+        </div>
+        {!isCollapsed && userProfile && (
+          <p className="text-sm text-blue-100">
+            Bienvenido, {userProfile.name}
+          </p>
+        )}
       </div>
 
       {/* Navigation */}
@@ -65,8 +87,15 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Logout */}
-      <div className="absolute bottom-0 left-0 right-0 p-6">
+      {/* Settings and Logout */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
+        <Link
+          to="/settings"
+          className="flex items-center gap-3 text-blue-200 hover:text-white transition-colors"
+        >
+          <Settings className="w-6 h-6 flex-shrink-0" />
+          {!isCollapsed && <span>Ajustes</span>}
+        </Link>
         <Link
           to="/logout"
           className="flex items-center gap-3 text-blue-200 hover:text-white transition-colors"
