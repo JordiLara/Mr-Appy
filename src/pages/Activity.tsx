@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService } from "../services/moodService";
-import { userService } from "../services/userService";
+import { moodService, userService } from "../services";
 
 const moods = [
   {
