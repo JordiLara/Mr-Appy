@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 //import ProtectedRoute from "../routes/ProtectedRoute";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
@@ -17,7 +17,6 @@ import Reviews from "../pages/manager/Reviews";
 
 const AppRoutes: React.FC = () => {
   return (
-    <Router>
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
@@ -43,7 +42,6 @@ const AppRoutes: React.FC = () => {
           <Route path="/manager/reviews" element={<Reviews />} />
         </Route>
       </Routes>
-    </Router>
   );
 };
 

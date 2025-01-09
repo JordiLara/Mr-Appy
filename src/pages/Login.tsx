@@ -23,7 +23,7 @@ export default function Login() {
 
     try {
       await login(formData);
-      navigate("/dashboard");
+      navigate("/manager/managerdashboard");
     } catch (err: any) {
       setError(err.message || "Error al iniciar sesión");
     } finally {
