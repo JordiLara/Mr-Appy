@@ -1,7 +1,20 @@
 import api from "./config";
-import { User, LoginCredentials, AuthResponse } from "../../types/typesAuth";
+import {
+  User,
+  LoginCredentials,
+  RegisterData,
+  AuthResponse,
+} from "../../types/typesAuth";
 
 export const authService = {
+  async register(data: RegisterData): Promise<AuthResponse> {
+    const response = await api.post<AuthResponse>("/auth/register", data);
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
+    return response.data;
+  },
+
   async login(credentials: LoginCredentials): Promise<User> {
     const { data } = await api.post<AuthResponse>("/auth/login", credentials);
     if (data.token) {

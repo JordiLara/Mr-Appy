@@ -16,9 +16,8 @@ export interface RegisterData {
   password: string;
   name: string;
   surname: string;
-  companyName: string;
-  teamName: string;
   employeeRole: string;
+  teamId?: number;
   role: string;
 }
 
