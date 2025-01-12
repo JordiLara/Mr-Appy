@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import ProtectedManagerRoute from "./ProtectedMangerRoute";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -38,7 +39,14 @@ const AppRoutes: React.FC = () => {
         <Route path="/team" element={<Team />} />
       </Route>
       {/* Manager protected routes */}
-      <Route path="/" element={<ManagerLayout />}>
+      <Route
+        path="/"
+        element={
+          <ProtectedManagerRoute>
+            <ManagerLayout />
+          </ProtectedManagerRoute>
+        }
+      >
         <Route path="/manager/teaminvites" element={<TeamInvites />} />
         <Route
           path="/manager/managerdashboard"
