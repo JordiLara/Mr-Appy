@@ -30,7 +30,7 @@ export const authService = {
 
   async getCurrentUser(): Promise<User | null> {
     try {
-      const { data } = await api.get<{ user: User }>("/auth/user");
+      const { data } = await api.get<{ user: User }>("/user");
       return data.user;
     } catch (error) {
       return null;
