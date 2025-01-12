@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   MessageSquare,
-  ThumbsUp,
   Flag,
   Search,
   Sparkles,
@@ -9,47 +8,63 @@ import {
   Meh,
   Frown,
   XCircle,
+  ThumbsUp,
 } from "lucide-react";
+import { reviewService } from "../../services/api";
+import { Review } from "../../types/reviews";
 
-// Mock data (replace with backend)
-const mockReviews = [
+// Datos mock para usar en caso de error
+const mockReviews: Review[] = [
   {
-    id: 1,
-    author: "John Doe",
-    date: "2024-01-01",
-    mood: "Amazing",
-    moodColor: "text-yellow-500",
-    moodBg: "bg-yellow-50",
-    moodIcon: Sparkles,
-    message:
+    id: "1",
+    mood_id: "1",
+    content:
       "Great team collaboration today! The sprint planning went smoothly.",
-    likes: 5,
-    anonymous: false,
+    is_anonymous: false,
+    mood_type: "Amazing",
+    created_at: new Date().toISOString(),
+    likes_count: 5,
+    is_flagged: false,
+    author: {
+      name: "John",
+      surname: "Doe",
+    },
   },
   {
-    id: 2,
-    author: "Anonymous",
-    date: "2024-01-01",
-    mood: "Neutral",
-    moodColor: "text-blue-500",
-    moodBg: "bg-blue-50",
-    moodIcon: Meh,
-    message:
+    id: "2",
+    mood_id: "2",
+    content:
       "Workload is getting a bit heavy, might need to discuss task distribution.",
-    likes: 3,
-    anonymous: true,
+    is_anonymous: true,
+    mood_type: "Neutral",
+    created_at: new Date(Date.now() - 86400000).toISOString(), // Ayer
+    likes_count: 2,
+    is_flagged: false,
   },
   {
-    id: 3,
-    author: "Jane Smith",
-    date: "2024-01-02",
-    mood: "Rough",
-    moodColor: "text-red-500",
-    moodBg: "bg-red-50",
-    moodIcon: XCircle,
-    message: "Deadlines are tight this sprint, feeling overwhelmed.",
-    likes: 2,
-    anonymous: false,
+    id: "3",
+    mood_id: "3",
+    content:
+      "Successfully completed the feature ahead of schedule. Team support was great!",
+    is_anonymous: false,
+    mood_type: "Good",
+    created_at: new Date(Date.now() - 172800000).toISOString(), // Hace 2 días
+    likes_count: 8,
+    is_flagged: false,
+    author: {
+      name: "Jane",
+      surname: "Smith",
+    },
+  },
+  {
+    id: "4",
+    mood_id: "4",
+    content: "Feeling a bit overwhelmed with the current project deadlines.",
+    is_anonymous: true,
+    mood_type: "Down",
+    created_at: new Date(Date.now() - 259200000).toISOString(), // Hace 3 días
+    likes_count: 3,
+    is_flagged: false,
   },
 ];
 
@@ -68,20 +83,84 @@ const moods = [
 ];
 
 export default function Reviews() {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedMood, setSelectedMood] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      setIsLoading(true);
+      const response = await reviewService.getTeamReviews("current");
+      setReviews(response);
+    } catch (err) {
+      setError("Error al cargar las reviews");
+      console.error(err);
+      // Usar datos mock en caso de error
+      setReviews(mockReviews);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLikeReview = async (reviewId: string) => {
+    try {
+      await reviewService.likeReview(reviewId);
+      fetchReviews();
+    } catch (err) {
+      console.error("Error al dar like:", err);
+      // Actualizar localmente en caso de error
+      setReviews(
+        reviews.map((review) =>
+          review.id === reviewId
+            ? { ...review, likes_count: review.likes_count + 1 }
+            : review
+        )
+      );
+    }
+  };
+
+  const handleFlagReview = async (reviewId: string) => {
+    try {
+      await reviewService.flagReview(reviewId, "Contenido inapropiado");
+      fetchReviews();
+    } catch (err) {
+      console.error("Error al marcar la review:", err);
+      setReviews(
+        reviews.map((review) =>
+          review.id === reviewId ? { ...review, is_flagged: true } : review
+        )
+      );
+    }
+  };
 
   const filteredReviews = useMemo(() => {
-    return mockReviews.filter((review) => {
+    return reviews.filter((review) => {
       const matchesMood =
-        selectedMood === "All" || review.mood === selectedMood;
+        selectedMood === "All" ||
+        review.mood_type.toLowerCase() === selectedMood.toLowerCase();
       const matchesSearch =
-        review.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (!review.anonymous &&
-          review.author.toLowerCase().includes(searchQuery.toLowerCase()));
+        review.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (!review.is_anonymous &&
+          review.author?.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()));
       return matchesMood && matchesSearch;
     });
-  }, [selectedMood, searchQuery]);
+  }, [reviews, selectedMood, searchQuery]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-gray-600">Cargando reviews...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -91,6 +170,10 @@ export default function Reviews() {
           <p className="text-gray-600">See what your team members are saying</p>
         </div>
       </header>
+
+      {error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg">{error}</div>
+      )}
 
       <div className="space-y-6">
         {/* Search and Filter */}
@@ -129,53 +212,83 @@ export default function Reviews() {
 
         {/* Reviews List */}
         <div className="grid grid-cols-1 gap-6">
-          {filteredReviews.map((review) => {
-            const MoodIcon = review.moodIcon;
-            return (
-              <div
-                key={review.id}
-                className="bg-white rounded-xl shadow-sm p-6"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">
-                        {review.anonymous ? "Anonymous" : review.author}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {new Date(review.date).toLocaleDateString()}
-                      </span>
+          {filteredReviews.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No se encontraron reviews
+            </div>
+          ) : (
+            filteredReviews.map((review) => {
+              const mood = moods.find(
+                (m) => m.name.toLowerCase() === review.mood_type.toLowerCase()
+              );
+              const MoodIcon = mood?.icon || Meh;
+
+              return (
+                <div
+                  key={review.id}
+                  className="bg-white rounded-xl shadow-sm p-6"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-gray-900">
+                          {review.is_anonymous
+                            ? "Anonymous"
+                            : `${review.author?.name} ${review.author?.surname}`}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {new Date(review.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div
+                        className={`flex items-center gap-1 mt-1 ${
+                          mood?.color || "text-gray-500"
+                        }`}
+                      >
+                        <MoodIcon className="w-4 h-4" />
+                        <span className="text-sm">{review.mood_type}</span>
+                      </div>
                     </div>
-                    <div
-                      className={`flex items-center gap-1 mt-1 ${review.moodColor}`}
-                    >
-                      <MoodIcon className="w-4 h-4" />
-                      <span className="text-sm">{review.mood}</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleLikeReview(review.id)}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      >
+                        <ThumbsUp
+                          className={`w-5 h-5 ${
+                            review.likes_count > 0
+                              ? "text-blue-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </button>
+                      <button
+                        onClick={() => handleFlagReview(review.id)}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      >
+                        <Flag
+                          className={`w-5 h-5 ${
+                            review.is_flagged ? "text-red-500" : "text-gray-400"
+                          }`}
+                        />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                      <ThumbsUp className="w-5 h-5 text-gray-600" />
-                    </button>
-                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                      <Flag className="w-5 h-5 text-gray-600" />
+                  <p className="text-gray-700">{review.content}</p>
+                  <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <ThumbsUp className="w-4 h-4" />
+                      <span>{review.likes_count}</span>
+                    </div>
+                    <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Reply</span>
                     </button>
                   </div>
                 </div>
-                <p className="text-gray-700">{review.message}</p>
-                <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <ThumbsUp className="w-4 h-4" />
-                    <span>{review.likes}</span>
-                  </div>
-                  <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Reply</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService } from "../services/api";
+import { moodService, reviewService } from "../services/api";
 
 type MoodEntry = {
   id: string;
@@ -88,11 +88,19 @@ export default function Activity() {
 
     try {
       const selectedMoodData = moods[selectedMood - 1];
-      await moodService.create({
+
+      const moodResponse = await moodService.create({
         mood_type: selectedMoodData.type,
         note,
         is_anonymous: isPrivate,
         created_at: new Date().toISOString(),
+      });
+
+      await reviewService.create({
+        mood_id: moodResponse.id,
+        content: note,
+        is_anonymous: isPrivate,
+        mood_type: selectedMoodData.type,
       });
 
       setSuccess("¡Estado de ánimo registrado correctamente!");
