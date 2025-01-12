@@ -7,20 +7,20 @@ import {
 } from "../../types/typesAuth";
 
 export const authService = {
-  async register(data: RegisterData): Promise<AuthResponse> {
+  async register(data: RegisterData): Promise<User> {
     const response = await api.post<AuthResponse>("/auth/register", data);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
     }
-    return response.data;
+    return response.data.user;
   },
 
   async login(credentials: LoginCredentials): Promise<User> {
-    const { data } = await api.post<AuthResponse>("/auth/login", credentials);
-    if (data.token) {
-      localStorage.setItem("token", data.token);
+    const response = await api.post<AuthResponse>("/auth/login", credentials);
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
     }
-    return data.user;
+    return response.data.user;
   },
 
   async logout(): Promise<void> {
@@ -30,8 +30,8 @@ export const authService = {
 
   async getCurrentUser(): Promise<User | null> {
     try {
-      const { data } = await api.get<{ user: User }>("/user");
-      return data.user;
+      const response = await api.get<{ user: User }>("/user");
+      return response.data.user;
     } catch (error) {
       return null;
     }

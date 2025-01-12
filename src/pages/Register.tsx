@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Mail, Lock, User, Building2, Users, Briefcase } from "lucide-react";
+import { authService } from "../services/api/authService";
 import AuthLayout from "../auth/AuthLayout";
 import FormInput from "../components/FormInput";
 
@@ -16,7 +16,7 @@ const Register: React.FC = () => {
     companyName: "",
     teamName: "",
     employeeRole: "",
-    role: "user",
+    roles: "manager",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -39,9 +39,18 @@ const Register: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:3000/auth/register", formData);
+      // Excluir confirmPassword del objeto que se envía
+      const { confirmPassword, ...registerData } = formData;
+      const user = await authService.register(registerData);
+
       setSuccess("Usuario registrado correctamente");
-      setTimeout(() => navigate("/login"), 2000);
+
+      // Redirigir basado en el rol del usuario
+      if (user.roles === "manager") {
+        setTimeout(() => navigate("/manager/managerdashboard"), 2000);
+      } else {
+        setTimeout(() => navigate("/activity"), 2000);
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al registrar usuario");
     } finally {

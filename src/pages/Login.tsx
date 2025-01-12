@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import AuthLayout from "../auth/AuthLayout";
@@ -7,6 +7,7 @@ import FormInput from "../components/FormInput";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -22,10 +23,16 @@ export default function Login() {
     setError("");
 
     try {
-      await login(formData);
-      navigate("/manager/managerdashboard");
+      const user = await login(formData);
+
+      // Obtener la ruta anterior o usar la ruta por defecto según el rol
+      const from =
+        location.state?.from?.pathname ||
+        (user.roles === "manager" ? "/manager/managerdashboard" : "/activity");
+console.log(user)
+      navigate(from, { replace: true });
     } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión");
+      setError(err.response?.data?.message || "Error al iniciar sesión");
     } finally {
       setIsLoading(false);
     }

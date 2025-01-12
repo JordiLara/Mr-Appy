@@ -5,7 +5,7 @@ import { authService } from "../services/api/authService";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<User>;
   logout: () => Promise<void>;
 }
 
@@ -31,10 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, [fetchUser]);
 
-  const login = async (credentials: LoginCredentials) => {
+  const login = async (credentials: LoginCredentials): Promise<User> => {
     try {
       const user = await authService.login(credentials);
       setUser(user);
+      return user;
     } catch (error) {
       console.error("Error during login:", error);
       throw error;

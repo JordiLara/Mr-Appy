@@ -55,7 +55,7 @@ export default function TeamMemberRegister() {
       await authService.register({
         ...registrationData,
         teamId: parseInt(teamId),
-        role: "employee",
+        roles: "user",
       });
 
       setSuccess("¡Registro completado! Redirigiendo...");

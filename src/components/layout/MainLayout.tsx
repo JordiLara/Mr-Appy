@@ -7,7 +7,7 @@ export default function MainLayout() {
 
   // Redirigir a dashboard si es un manager
   if (user?.roles === "manager") {
-    return <Navigate to="/manager/dashboard" replace />;
+    return <Navigate to="/manager/managerdashboard" replace />;
   }
 
   return (

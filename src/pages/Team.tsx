@@ -8,7 +8,7 @@ interface TeamMember {
   email: string;
   phone: string;
   location: string;
-  role: string;
+  roles: string;
   avatar: string;
   joinedAt: string;
 }
@@ -49,7 +49,7 @@ export default function Team() {
               email: "ana.garcia@example.com",
               phone: "+34 666 777 888",
               location: "Madrid",
-              role: "Frontend Developer",
+              roles: "Frontend Developer",
               avatar:
                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
               joinedAt: "2024-01-01",
@@ -60,7 +60,7 @@ export default function Team() {
               email: "carlos.ruiz@example.com",
               phone: "+34 666 999 000",
               location: "Barcelona",
-              role: "Backend Developer",
+              roles: "Backend Developer",
               avatar:
                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
               joinedAt: "2024-01-15",
@@ -71,7 +71,7 @@ export default function Team() {
               email: "laura.martinez@example.com",
               phone: "+34 666 111 222",
               location: "Valencia",
-              role: "UI/UX Designer",
+              roles: "UI/UX Designer",
               avatar:
                 "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
               joinedAt: "2024-02-01",
@@ -133,7 +133,7 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-gray-600">{member.role}</p>
+                  <p className="text-sm text-gray-600">{member.roles}</p>
                 </div>
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="text-xl font-bold">{selectedMember.name}</h3>
-                  <p className="text-gray-600">{selectedMember.role}</p>
+                  <p className="text-gray-600">{selectedMember.roles}</p>
                 </div>
               </div>
               <button

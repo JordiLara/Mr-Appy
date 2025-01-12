@@ -3,7 +3,7 @@ export interface User {
   email: string;
   name: string;
   surname: string;
-  roles: "manager" | "employee";
+  roles: "manager" | "user";
 }
 
 export interface LoginCredentials {
@@ -17,8 +17,10 @@ export interface RegisterData {
   name: string;
   surname: string;
   employeeRole: string;
-  teamId?: number;
   roles: string;
+  teamId?: number;
+  companyName?: string;
+  teamName?: string;
 }
 
 export interface AuthResponse {
