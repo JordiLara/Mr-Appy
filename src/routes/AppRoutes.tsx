@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import ProtectedManagerRoute from "./ProtectedMangerRoute";
 import LandingPage from "../pages/LandingPage";
@@ -55,6 +55,9 @@ const AppRoutes: React.FC = () => {
         <Route path="/manager/managerteam" element={<ManagerTeam />} />
         <Route path="/manager/reviews" element={<Reviews />} />
       </Route>
+
+      {/* Catch all route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
