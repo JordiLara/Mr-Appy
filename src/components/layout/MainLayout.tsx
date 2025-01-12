@@ -1,8 +1,15 @@
-
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import Sidebar from "./Sidebar";
 
 export default function MainLayout() {
+  const { user } = useAuth();
+
+  // Redirigir a dashboard si es un manager
+  if (user?.role === "manager") {
+    return <Navigate to="/manager/dashboard" replace />;
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
