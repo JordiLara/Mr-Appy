@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService, reviewService } from "../services/api";
-
-type MoodEntry = {
-  id: string;
-  created_at: string;
-  mood_type: "amazing" | "good" | "neutral" | "down" | "rough";
-  note: string;
-  is_anonymous: boolean;
-};
+import { reviewService } from "../services/api";
+import { Review } from "../types/reviews";
 
 const moods = [
   {
@@ -18,7 +11,7 @@ const moods = [
     color: "text-red-500",
     bg: "bg-red-100",
     label: "Muy mal",
-    type: "rough" as const,
+    value: 1,
   },
   {
     id: 2,
@@ -26,7 +19,7 @@ const moods = [
     color: "text-orange-500",
     bg: "bg-orange-100",
     label: "Mal",
-    type: "down" as const,
+    value: 2,
   },
   {
     id: 3,
@@ -34,7 +27,7 @@ const moods = [
     color: "text-yellow-500",
     bg: "bg-yellow-100",
     label: "Regular",
-    type: "neutral" as const,
+    value: 3,
   },
   {
     id: 4,
@@ -42,7 +35,7 @@ const moods = [
     color: "text-green-500",
     bg: "bg-green-100",
     label: "Bien",
-    type: "good" as const,
+    value: 4,
   },
   {
     id: 5,
@@ -50,7 +43,7 @@ const moods = [
     color: "text-emerald-500",
     bg: "bg-emerald-100",
     label: "Muy bien",
-    type: "amazing" as const,
+    value: 5,
   },
 ];
 
@@ -58,7 +51,7 @@ export default function Activity() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [note, setNote] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [entries, setEntries] = useState<MoodEntry[]>([]);
+  const [entries, setEntries] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -69,8 +62,8 @@ export default function Activity() {
 
   const fetchEntries = async () => {
     try {
-      const response = await moodService.getUserMoods();
-      setEntries(response);
+      const reviews = await reviewService.getReviews();
+      setEntries(reviews);
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Error al cargar los estados de ánimo"
@@ -89,18 +82,10 @@ export default function Activity() {
     try {
       const selectedMoodData = moods[selectedMood - 1];
 
-      const moodResponse = await moodService.create({
-        mood_type: selectedMoodData.type,
-        note,
-        is_anonymous: isPrivate,
-        created_at: new Date().toISOString(),
-      });
-
       await reviewService.create({
-        mood_id: moodResponse.id,
+        mood: selectedMoodData.value,
         content: note,
-        is_anonymous: isPrivate,
-        mood_type: selectedMoodData.type,
+        isAnonymous: isPrivate,
       });
 
       setSuccess("¡Estado de ánimo registrado correctamente!");
@@ -117,8 +102,8 @@ export default function Activity() {
     }
   };
 
-  const getMoodFromType = (type: string) => {
-    return moods.find((mood) => mood.type === type) || moods[2];
+  const getMoodData = (moodValue: number) => {
+    return moods.find((mood) => mood.value === moodValue) || moods[2];
   };
 
   return (
@@ -207,9 +192,12 @@ export default function Activity() {
       </div>
 
       {entries.map((entry) => {
-        const moodData = getMoodFromType(entry.mood_type);
+        const moodData = getMoodData(entry.mood);
         return (
-          <div key={entry.id} className="bg-white rounded-xl shadow-sm p-6">
+          <div
+            key={entry.id_review}
+            className="bg-white rounded-xl shadow-sm p-6"
+          >
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold">
                 {format(new Date(entry.created_at), "EEEE, d 'de' MMMM", {
@@ -224,7 +212,9 @@ export default function Activity() {
                 {moodData.emoji}
               </div>
             </div>
-            {entry.note && <p className="text-gray-600">«{entry.note}»</p>}
+            {entry.content && (
+              <p className="text-gray-600">«{entry.content}»</p>
+            )}
           </div>
         );
       })}

@@ -1,21 +1,15 @@
 export interface Review {
-  id: string;
-  mood_id: string;
+  id_review: number;
+  id_user: number;
+  id_team: number;
   content: string;
   is_anonymous: boolean;
-  mood_type: string;
+  mood: number;
   created_at: string;
-  likes_count: number;
-  is_flagged: boolean;
-  author?: {
-    name: string;
-    surname: string;
-  };
 }
 
 export interface CreateReviewData {
-  mood_id: string;
+  mood: number;
   content: string;
-  is_anonymous: boolean;
-  mood_type: string;
+  isAnonymous: boolean;
 }
