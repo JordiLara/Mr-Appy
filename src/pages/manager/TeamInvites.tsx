@@ -11,12 +11,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { teamService } from "../../services/api";
-
-interface TeamData {
-  id: string;
-  name: string;
-  companyName: string;
-}
+import { Team } from "../../types/team";
 
 interface ShareOption {
   name: string;
@@ -26,7 +21,7 @@ interface ShareOption {
 }
 
 export default function TeamInvites() {
-  const [teamData, setTeamData] = useState<TeamData | null>(null);
+  const [teamData, setTeamData] = useState<Team | null>(null);
   const [inviteLink, setInviteLink] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
@@ -35,9 +30,9 @@ export default function TeamInvites() {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        const team = await teamService.getTeam("current");
+        const team = await teamService.getCurrentTeam();
         setTeamData(team);
-        // Generar el enlace de invitación automáticamente
+
         const baseUrl = window.location.origin;
         setInviteLink(`${baseUrl}/team/join/${team.id}`);
       } catch (err) {
@@ -90,7 +85,11 @@ export default function TeamInvites() {
       icon: Mail,
       color: "bg-gray-600 hover:bg-gray-700",
       onClick: (link) =>
-        window.open(`mailto:?body=${encodeURIComponent(link)}`),
+        window.open(
+          `mailto:?subject=Únete a nuestro equipo&body=${encodeURIComponent(
+            `Te invito a unirte a nuestro equipo en MrAppy.\n\nHaz clic en el siguiente enlace para registrarte:\n${link}`
+          )}`
+        ),
     },
   ];
 
@@ -102,7 +101,10 @@ export default function TeamInvites() {
 
   if (isLoading) {
     return (
-      <div className="text-center py-8">Cargando información del equipo...</div>
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-2 text-gray-600">Cargando información del equipo...</p>
+      </div>
     );
   }
 
@@ -166,7 +168,7 @@ export default function TeamInvites() {
               ) : (
                 <Copy className="w-5 h-5" />
               )}
-              {copied ? "Copiado!" : "Copiar"}
+              {copied ? "¡Copiado!" : "Copiar"}
             </button>
           </div>
 
@@ -174,7 +176,7 @@ export default function TeamInvites() {
             <h3 className="text-sm font-medium text-gray-700 mb-3">
               Compartir vía:
             </h3>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {shareOptions.map((option) => (
                 <button
                   key={option.name}

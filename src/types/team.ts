@@ -3,8 +3,17 @@ export interface Team {
   name: string;
   companyName: string;
   managerId: string;
-  createdAt: string;
-  updatedAt: string;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  roles: string[];
+  avatar: string;
+  joinedAt: string;
 }
 
 export interface TeamMemberRegistration {
@@ -12,13 +21,7 @@ export interface TeamMemberRegistration {
   password: string;
   name: string;
   surname: string;
+  employeeRole: string;
+  teamId: number;
   roles: "user";
-}
-
-export interface TeamMember {
-  id: string;
-  teamId: string;
-  userId: string;
-  roles: "manager" | "user";
-  joinedAt: string;
 }

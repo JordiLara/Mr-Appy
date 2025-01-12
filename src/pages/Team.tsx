@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Users, Mail, Phone, MapPin } from "lucide-react";
-import { teamService } from "../services/api/teamService";
-
-interface TeamMember {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  roles: string;
-  avatar: string;
-  joinedAt: string;
-}
+import { teamService } from "../services/api";
+import { TeamMember } from "../types/team";
 
 interface TeamData {
   id: string;
@@ -29,15 +19,16 @@ export default function Team() {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        const team = await teamService.getTeam("current");
+        const team = await teamService.getCurrentTeam();
         const members = await teamService.getMembers(team.id);
         setTeamData({
           ...team,
+          totalMembers: members.length,
           members,
         });
       } catch (err) {
         setError("Error al cargar la información del equipo");
-        // Datos de respaldo en caso de error
+        // Datos de respaldo en caso de fallo del backend
         setTeamData({
           id: "1",
           name: "Equipo de Desarrollo",
@@ -49,32 +40,10 @@ export default function Team() {
               email: "ana.garcia@example.com",
               phone: "+34 666 777 888",
               location: "Madrid",
-              roles: "Frontend Developer",
+              roles: ["Frontend Developer"],
               avatar:
                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
               joinedAt: "2024-01-01",
-            },
-            {
-              id: "2",
-              name: "Carlos Ruiz",
-              email: "carlos.ruiz@example.com",
-              phone: "+34 666 999 000",
-              location: "Barcelona",
-              roles: "Backend Developer",
-              avatar:
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-              joinedAt: "2024-01-15",
-            },
-            {
-              id: "3",
-              name: "Laura Martínez",
-              email: "laura.martinez@example.com",
-              phone: "+34 666 111 222",
-              location: "Valencia",
-              roles: "UI/UX Designer",
-              avatar:
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-              joinedAt: "2024-02-01",
             },
           ],
         });
@@ -133,7 +102,7 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-gray-600">{member.roles}</p>
+                  <p className="text-sm text-gray-600">{member.roles[0]}</p>
                 </div>
               </div>
             </div>
@@ -154,7 +123,7 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="text-xl font-bold">{selectedMember.name}</h3>
-                  <p className="text-gray-600">{selectedMember.roles}</p>
+                  <p className="text-gray-600">{selectedMember.roles[0]}</p>
                 </div>
               </div>
               <button
