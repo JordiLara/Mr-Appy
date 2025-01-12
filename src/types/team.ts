@@ -12,13 +12,13 @@ export interface TeamMemberRegistration {
   password: string;
   name: string;
   surname: string;
-  role: "employee";
+  roles: "employee";
 }
 
 export interface TeamMember {
   id: string;
   teamId: string;
   userId: string;
-  role: "manager" | "employee";
+  roles: "manager" | "employee";
   joinedAt: string;
 }

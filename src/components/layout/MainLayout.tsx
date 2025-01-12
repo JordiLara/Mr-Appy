@@ -6,7 +6,7 @@ export default function MainLayout() {
   const { user } = useAuth();
 
   // Redirigir a dashboard si es un manager
-  if (user?.role === "manager") {
+  if (user?.roles === "manager") {
     return <Navigate to="/manager/dashboard" replace />;
   }
 
