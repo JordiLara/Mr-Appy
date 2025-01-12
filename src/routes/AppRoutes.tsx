@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-//import ProtectedRoute from "../routes/ProtectedRoute";
+import ProtectedRoute from "../routes/ProtectedRoute";
 import LandingPage from "../pages/LandingPage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -17,31 +17,37 @@ import Reviews from "../pages/manager/Reviews";
 
 const AppRoutes: React.FC = () => {
   return (
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* Protected route with register token */}
-        <Route path="/team/join/:teamId" element={<TeamMemberRegister />} />
-        {/* Protected routes with MainLayout */}
-        <Route path="/" element={<MainLayout />}>
-          <Route path="/activity" element={<Activity />} />{" "}
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/stats" element={<Stats />} />
-          <Route path="/team" element={<Team />} />
-        </Route>
-        {/* Manager protected routes */}
-        <Route path="/" element={<ManagerLayout />}>
-          <Route path="/manager/teaminvites" element={<TeamInvites />} />
-          <Route
-            path="/manager/managerdashboard"
-            element={<ManagerDashboard />}
-          />
-          <Route path="/manager/managerteam" element={<ManagerTeam />} />
-          <Route path="/manager/reviews" element={<Reviews />} />
-        </Route>
-      </Routes>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/team/join/:teamId" element={<TeamMemberRegister />} />
+      {/* Protected routes with MainLayout */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/activity" element={<Activity />} />{" "}
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/stats" element={<Stats />} />
+        <Route path="/team" element={<Team />} />
+      </Route>
+      {/* Manager protected routes */}
+      <Route path="/" element={<ManagerLayout />}>
+        <Route path="/manager/teaminvites" element={<TeamInvites />} />
+        <Route
+          path="/manager/managerdashboard"
+          element={<ManagerDashboard />}
+        />
+        <Route path="/manager/managerteam" element={<ManagerTeam />} />
+        <Route path="/manager/reviews" element={<Reviews />} />
+      </Route>
+    </Routes>
   );
 };
 
