@@ -4,7 +4,7 @@ import { User } from "../../types";
 export const userService = {
   // Get current user profile
   getCurrentUser: async () => {
-    const response = await api.get("/users/me");
+    const response = await api.get("/user");
     return response.data;
   },
 
