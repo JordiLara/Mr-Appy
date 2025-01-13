@@ -84,22 +84,6 @@ export default function TeamMemberRegister() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <FormInput
-            name="email"
-            type="email"
-            placeholder="Correo Electrónico"
-            value={formData.email}
-            onChange={handleInputChange}
-            icon={Mail}
-          />
-          <FormInput
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleInputChange}
-            icon={Lock}
-          />
-          <FormInput
             name="name"
             type="text"
             placeholder="Nombre"
@@ -116,12 +100,20 @@ export default function TeamMemberRegister() {
             icon={User}
           />
           <FormInput
-            name="employeeRole"
-            type="text"
-            placeholder="Rol en la Empresa"
-            value={formData.employeeRole}
+            name="email"
+            type="email"
+            placeholder="Correo Electrónico"
+            value={formData.email}
             onChange={handleInputChange}
-            icon={Briefcase}
+            icon={Mail}
+          />
+          <FormInput
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            value={formData.password}
+            onChange={handleInputChange}
+            icon={Lock}
           />
           <FormInput
             name="confirmPassword"
@@ -130,6 +122,14 @@ export default function TeamMemberRegister() {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             icon={Lock}
+          />
+          <FormInput
+            name="employeeRole"
+            type="text"
+            placeholder="Rol en la Empresa"
+            value={formData.employeeRole}
+            onChange={handleInputChange}
+            icon={Briefcase}
           />
         </div>
 

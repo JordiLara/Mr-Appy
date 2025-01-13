@@ -29,7 +29,7 @@ export default function Login() {
       const from =
         location.state?.from?.pathname ||
         (user.roles === "manager" ? "/manager/managerdashboard" : "/activity");
-console.log(user)
+console.log(user.roles)
       navigate(from, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al iniciar sesión");
