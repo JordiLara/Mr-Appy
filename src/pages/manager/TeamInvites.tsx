@@ -15,7 +15,7 @@ import { Team } from "../../types/team";
 
 // Mock data para usar en caso de error
 const mockTeamData: Team = {
-  id: "8",
+  id_team: "8",
   name: "Equipo de Desarrollo",
   companyName: "TechCorp",
   managerId: "13",
@@ -42,16 +42,17 @@ export default function TeamInvites() {
         const team = await teamService.getCurrentTeam();
         setTeamData(team);
 
-        // Generar el enlace de invitación con el ID real del equipo
-        const baseUrl = window.location.origin;
-        setInviteLink(`${baseUrl}/team/join/${team.id}`);
+        if (team.id_team) {
+          const baseUrl = window.location.origin;
+          setInviteLink(`${baseUrl}/team/join/${team.id_team}`);
+        }
       } catch (err) {
         console.error("Error fetching team:", err);
         setError("Error al cargar la información del equipo");
         // Usar datos mock en caso de error
         setTeamData(mockTeamData);
         const baseUrl = window.location.origin;
-        setInviteLink(`${baseUrl}/team/join/${mockTeamData.id}`);
+        setInviteLink(`${baseUrl}/team/join/${mockTeamData.id_team}`);
       } finally {
         setIsLoading(false);
       }
