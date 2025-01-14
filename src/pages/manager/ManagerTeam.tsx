@@ -109,6 +109,9 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="text-xl font-bold">{selectedMember.name}</h3>
+                  <p className="text-gray-600">
+                    {selectedMember.employee_role}
+                  </p>
                 </div>
               </div>
               <button
