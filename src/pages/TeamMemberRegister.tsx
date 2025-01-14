@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Mail, Lock, User, Briefcase } from "lucide-react";
 import AuthLayout from "../auth/AuthLayout";
 import FormInput from "../components/FormInput";
-import { authService } from "../services/api/authService";
+import { authService, teamService } from "../services/api";
 
 interface TeamMemberFormData {
   email: string;
@@ -12,6 +12,11 @@ interface TeamMemberFormData {
   name: string;
   surname: string;
   employeeRole: string;
+}
+
+interface TeamInfo {
+  name: string;
+  companyName: string;
 }
 
 export default function TeamMemberRegister() {
@@ -28,6 +33,24 @@ export default function TeamMemberRegister() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
+
+  useEffect(() => {
+    const fetchTeamInfo = async () => {
+      try {
+        if (!teamId) {
+          setError("ID de equipo no proporcionado");
+          return;
+        }
+        const team = await teamService.getTeam(teamId);
+        setTeamInfo(team);
+      } catch (err) {
+        setError("Equipo no encontrado o enlace inválido");
+      }
+    };
+
+    fetchTeamInfo();
+  }, [teamId]);
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -67,8 +90,33 @@ export default function TeamMemberRegister() {
     }
   };
 
+  if (!teamInfo && !error) {
+    return (
+      <AuthLayout title="Cargando información del equipo...">
+        <div className="text-center text-white">
+          Por favor espera mientras cargamos la información...
+        </div>
+      </AuthLayout>
+    );
+  }
+
+  if (error && !teamInfo) {
+    return (
+      <AuthLayout title="Error">
+        <div className="bg-red-500/10 text-red-100 p-4 rounded-lg">{error}</div>
+      </AuthLayout>
+    );
+  }
+
   return (
-    <AuthLayout title="Crear cuenta">
+    <AuthLayout title={`Únete a ${teamInfo?.name}`}>
+      <div className="mb-6 text-center">
+        <p className="text-blue-100">
+          Te estás uniendo al equipo de {teamInfo?.name} en{" "}
+          {teamInfo?.companyName}
+        </p>
+      </div>
+
       {error && (
         <div className="bg-red-500/10 text-red-100 p-4 rounded-lg mb-6">
           {error}
@@ -83,22 +131,6 @@ export default function TeamMemberRegister() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <FormInput
-            name="name"
-            type="text"
-            placeholder="Nombre"
-            value={formData.name}
-            onChange={handleInputChange}
-            icon={User}
-          />
-          <FormInput
-            name="surname"
-            type="text"
-            placeholder="Apellido"
-            value={formData.surname}
-            onChange={handleInputChange}
-            icon={User}
-          />
           <FormInput
             name="email"
             type="email"
@@ -116,12 +148,20 @@ export default function TeamMemberRegister() {
             icon={Lock}
           />
           <FormInput
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirmar Contraseña"
-            value={formData.confirmPassword}
+            name="name"
+            type="text"
+            placeholder="Nombre"
+            value={formData.name}
             onChange={handleInputChange}
-            icon={Lock}
+            icon={User}
+          />
+          <FormInput
+            name="surname"
+            type="text"
+            placeholder="Apellido"
+            value={formData.surname}
+            onChange={handleInputChange}
+            icon={User}
           />
           <FormInput
             name="employeeRole"
@@ -131,6 +171,14 @@ export default function TeamMemberRegister() {
             onChange={handleInputChange}
             icon={Briefcase}
           />
+          <FormInput
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirmar Contraseña"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            icon={Lock}
+          />
         </div>
 
         <button
@@ -139,7 +187,7 @@ export default function TeamMemberRegister() {
           className="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg
             transition-colors disabled:opacity-50 mt-8"
         >
-          {isLoading ? "Registrando..." : "Crear cuenta"}
+          {isLoading ? "Registrando..." : "Unirme al equipo"}
         </button>
       </form>
     </AuthLayout>

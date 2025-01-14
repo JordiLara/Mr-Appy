@@ -11,6 +11,7 @@ export interface TeamMember {
   email: string;
   phone: string;
   location: string;
+  role: string;
   roles: string[];
   avatar: string;
   joinedAt: string;
