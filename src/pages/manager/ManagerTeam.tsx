@@ -14,7 +14,7 @@ interface TeamMember {
 }
 
 interface TeamData {
-  id: string;
+  id_team: string;
   name: string;
   totalMembers: number;
   members: TeamMember[];
@@ -42,7 +42,7 @@ export default function Team() {
         setError("Error al cargar la información del equipo");
         // Datos de respaldo en caso de error
         setTeamData({
-          id: "1",
+          id_team: "1",
           name: "Equipo de Desarrollo",
           totalMembers: 3,
           members: [
