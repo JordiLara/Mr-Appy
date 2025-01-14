@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MessageSquare, Search } from "lucide-react";
 import { reviewService } from "../../services/api";
 import { Review } from "../../types/reviews";
