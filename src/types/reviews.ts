@@ -6,6 +6,10 @@ export interface Review {
   is_anonymous: boolean;
   mood: number;
   created_at: string;
+  author?: {
+    name: string;
+    surname: string;
+  };
 }
 
 export interface CreateReviewData {
