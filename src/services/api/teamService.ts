@@ -9,7 +9,7 @@ export const teamService = {
 
       return {
         id_team: team.id_team,
-        name: team.name,
+        name: team.team_name,
         companyName: team.company_name,
         managerId: team.manager_id,
       };
