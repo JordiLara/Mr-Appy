@@ -1,86 +1,86 @@
 import api from "./config";
-import { Team, TeamMember } from "../../types/team";
+import {
+  Team,
+  TeamMember,
+  TeamResponse,
+  TeamMembersResponse,
+} from "../../types/team";
+
+// Mock data para fallbacks
+const mockTeam = {
+  id_team: "1",
+  team_name: "Equipo de Desarrollo",
+  company_name: "TechCorp",
+  id_user_manager: "1",
+};
+
+const mockMembers = [
+  {
+    id_user: "1",
+    name: "Ana García",
+    email: "ana.garcia@example.com",
+    phone: "+34 666 777 888",
+    location: "Madrid",
+    employee_role: "Frontend Developer",
+    roles: ["user"],
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+    created_at: "2024-01-01",
+  },
+];
 
 export const teamService = {
   getCurrentTeam: async (): Promise<Team> => {
     try {
-      const response = await api.get("/team");
-      const { team } = response.data;
+      const response = await api.get<TeamResponse>("/team");
 
-      return {
-        id_team: team.id_team,
-        name: team.team_name,
-        companyName: team.company_name,
-        managerId: team.manager_id,
-      };
+      if (response.data.code === 1 && response.data.team) {
+        return response.data.team;
+      }
+      return mockTeam;
     } catch (error) {
       console.error("Error fetching current team:", error);
-      throw error;
+      return mockTeam;
     }
   },
 
-  getTeam: async (teamId: string): Promise<Team> => {
+  getMembers: async (): Promise<TeamMember[]> => {
     try {
-      const response = await api.get(`/team/${teamId}`);
-      const { team } = response.data;
+      const response = await api.get<TeamMembersResponse>("/team/users");
 
-      return {
-        id_team: team.id_team,
-        name: team.name,
-        companyName: team.company_name,
-        managerId: team.manager_id,
-      };
-    } catch (error) {
-      console.error("Error fetching team:", error);
-      throw error;
-    }
-  },
-
-  getMembers: async (teamId: string): Promise<TeamMember[]> => {
-    try {
-      const response = await api.get(`/team/${teamId}/members`);
-      return response.data.members.map((member: any) => ({
-        id_user: member.id_user,
-        name: member.name,
-        email: member.email,
-        phone: member.phone || "",
-        location: member.location || "",
-        role: member.employee_role,
-        roles: member.roles || ["user"],
-        avatar:
-          member.avatar ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}`,
-        joinedAt: member.created_at,
-      }));
+      if (response.data.code === 1 && response.data.users) {
+        return response.data.users.map((member) => ({
+          ...member,
+          avatar:
+            member.avatar ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              member.name
+            )}`,
+          roles: ["user"],
+        }));
+      }
+      return mockMembers;
     } catch (error) {
       console.error("Error fetching team members:", error);
-      throw error;
+      return mockMembers;
     }
   },
 
-  update: async (teamId: string, data: Partial<Team>): Promise<Team> => {
+  update: async (data: Partial<Team>): Promise<Team> => {
     try {
-      const response = await api.put(`/team/${teamId}`, {
-        name: data.name,
-        company_name: data.companyName,
-      });
-      const { team } = response.data;
-
-      return {
-        id_team: team.id_team,
-        name: team.name,
-        companyName: team.company_name,
-        managerId: team.manager_id,
-      };
+      const response = await api.put<TeamResponse>("/team", data);
+      if (response.data.code === 1 && response.data.team) {
+        return response.data.team;
+      }
+      throw new Error("Error updating team");
     } catch (error) {
       console.error("Error updating team:", error);
       throw error;
     }
   },
 
-  removeMember: async (teamId: string, userId: string): Promise<void> => {
+  removeMember: async (userId: string): Promise<void> => {
     try {
-      await api.delete(`/team/${teamId}/members/${userId}`);
+      await api.delete(`/team/members/${userId}`);
     } catch (error) {
       console.error("Error removing team member:", error);
       throw error;
