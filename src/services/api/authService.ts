@@ -5,7 +5,6 @@ import {
   RegisterData,
   AuthResponse,
 } from "../../types/typesAuth";
-import { da } from "date-fns/locale";
 
 export const authService = {
   async register(data: RegisterData): Promise<User> {
@@ -33,8 +32,20 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
-    await api.post("/auth/logout");
-    localStorage.removeItem("token");
+    try {
+      await api.post(
+        "/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (error) {
+      console.error("Error during logout:", error);
+    } finally {
+      localStorage.clear();
+      window.location.href = "/";
+    }
   },
 
   async getCurrentUser(): Promise<User | null> {
