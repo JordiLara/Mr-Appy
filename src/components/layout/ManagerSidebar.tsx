@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -11,29 +11,18 @@ import {
   UserPlus,
   Settings,
 } from "lucide-react";
-import { userService, authService } from "../../services/api";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function ManagerSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [userProfile, setUserProfile] = useState<{ name: string } | null>(null);
   const location = useLocation();
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const profile = await userService.getCurrentUser();
-        setUserProfile(profile);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await authService.logout();
+      await logout();
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -73,10 +62,8 @@ export default function ManagerSidebar() {
           <Briefcase className="w-8 h-8 text-yellow-400 flex-shrink-0" />
           {!isCollapsed && <span className="text-xl font-bold">Manager</span>}
         </div>
-        {!isCollapsed && userProfile && (
-          <p className="text-sm text-indigo-100">
-            Bienvenido, {userProfile.name}
-          </p>
+        {!isCollapsed && user && (
+          <p className="text-sm text-indigo-100">Bienvenido, {user.name}</p>
         )}
       </div>
 
