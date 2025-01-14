@@ -1,8 +1,8 @@
 export interface Team {
   id_team: string;
-  name: string;
-  companyName: string;
-  managerId: string;
+  team_name: string;
+  company_name: string;
+  id_user_manager: string;
 }
 
 export interface TeamMember {
@@ -11,18 +11,20 @@ export interface TeamMember {
   email: string;
   phone: string;
   location: string;
-  role: string;
+  employee_role: string;
   roles: string[];
   avatar: string;
-  joinedAt: string;
+  created_at: string;
 }
 
-export interface TeamMemberRegistration {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
-  employeeRole: string;
-  id_team: number;
-  roles: "user";
+export interface TeamResponse {
+  code: number;
+  message: string;
+  team: Team;
+}
+
+export interface TeamMembersResponse {
+  code: number;
+  message: string;
+  users: TeamMember[];
 }
