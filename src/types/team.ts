@@ -1,5 +1,5 @@
 export interface Team {
-  id: string;
+  id_team: string;
   name: string;
   companyName: string;
   managerId: string;
@@ -23,6 +23,6 @@ export interface TeamMemberRegistration {
   name: string;
   surname: string;
   employeeRole: string;
-  teamId: number;
+  id_team: number;
   roles: "user";
 }

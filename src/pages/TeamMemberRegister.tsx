@@ -77,7 +77,7 @@ export default function TeamMemberRegister() {
 
       await authService.register({
         ...registrationData,
-        teamId: parseInt(teamId),
+        id_team: parseInt(teamId),
         roles: "user",
       });
 

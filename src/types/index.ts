@@ -1,7 +1,7 @@
 export * from "./typesAuth";
 
 export interface Team {
-  id: string;
+  id_team: string;
   name: string;
   companyName: string;
   managerId: string;
