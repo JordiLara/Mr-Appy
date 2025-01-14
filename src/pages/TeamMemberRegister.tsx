@@ -15,13 +15,13 @@ interface TeamMemberFormData {
 }
 
 interface TeamInfo {
-  name: string;
-  companyName: string;
+  team_name: string;
+  company_name: string;
 }
 
 export default function TeamMemberRegister() {
   const navigate = useNavigate();
-  const { teamId } = useParams();
+  const { id_team } = useParams();
   const [formData, setFormData] = useState<TeamMemberFormData>({
     email: "",
     password: "",
@@ -38,19 +38,22 @@ export default function TeamMemberRegister() {
   useEffect(() => {
     const fetchTeamInfo = async () => {
       try {
-        if (!teamId) {
+        if (!id_team) {
           setError("ID de equipo no proporcionado");
           return;
         }
-        const team = await teamService.getTeam(teamId);
-        setTeamInfo(team);
+        const team = await teamService.getTeam(id_team);
+        setTeamInfo({
+          team_name: team.team_name,
+          company_name: team.company_name,
+        });
       } catch (err) {
         setError("Equipo no encontrado o enlace inválido");
       }
     };
 
     fetchTeamInfo();
-  }, [teamId]);
+  }, [id_team]);
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -69,7 +72,7 @@ export default function TeamMemberRegister() {
     }
 
     try {
-      if (!teamId) {
+      if (!id_team) {
         throw new Error("ID de equipo no proporcionado");
       }
 
@@ -77,7 +80,7 @@ export default function TeamMemberRegister() {
 
       await authService.register({
         ...registrationData,
-        id_team: parseInt(teamId),
+        id_team: id_team,
         roles: "user",
       });
 
@@ -109,11 +112,11 @@ export default function TeamMemberRegister() {
   }
 
   return (
-    <AuthLayout title={`Únete a ${teamInfo?.name}`}>
+    <AuthLayout title={`Únete a ${teamInfo?.team_name}`}>
       <div className="mb-6 text-center">
         <p className="text-blue-100">
-          Te estás uniendo al equipo de {teamInfo?.name} en{" "}
-          {teamInfo?.companyName}
+          Te estás uniendo al equipo de {teamInfo?.team_name} en{" "}
+          {teamInfo?.company_name}
         </p>
       </div>
 

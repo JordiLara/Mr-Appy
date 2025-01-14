@@ -1,5 +1,5 @@
 export interface User {
-  id_user: string;
+  id: string;
   email: string;
   name: string;
   surname: string;
@@ -17,8 +17,8 @@ export interface RegisterData {
   name: string;
   surname: string;
   employeeRole: string;
-  roles: string;
-  id_team?: number;
+  roles: "manager" | "user";
+  id_team?: string | number;
   companyName?: string;
   teamName?: string;
 }
@@ -26,11 +26,4 @@ export interface RegisterData {
 export interface AuthResponse {
   user: User;
   token: string;
-}
-
-export class AuthError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthError";
-  }
 }

@@ -29,6 +29,20 @@ const mockMembers = [
 ];
 
 export const teamService = {
+  getTeam: async (id_team: string): Promise<Team> => {
+    try {
+      const response = await api.get<TeamResponse>(`/team/${id_team}`);
+
+      if (response.data.code === 1 && response.data.team) {
+        return response.data.team;
+      }
+      return mockTeam;
+    } catch (error) {
+      console.error("Error fetching team:", error);
+      return mockTeam;
+    }
+  },
+
   getCurrentTeam: async (): Promise<Team> => {
     try {
       const response = await api.get<TeamResponse>("/team");

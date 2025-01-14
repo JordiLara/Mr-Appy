@@ -16,17 +16,17 @@ export const moodService = {
 
   // Get team moods (for managers)
   getTeamMoods: async (
-    teamId: string,
+    id_team: string,
     params?: { startDate?: string; endDate?: string }
   ) => {
-    const response = await api.get(`/moods/team/${teamId}`, { params });
+    const response = await api.get(`/moods/team/${id_team}`, { params });
     return response.data;
   },
 
   // Get mood statistics
-  getStats: async (teamId?: string) => {
+  getStats: async (id_team?: string) => {
     const response = await api.get(
-      `/moods/stats${teamId ? `?teamId=${teamId}` : ""}`
+      `/moods/stats${id_team ? `?id_team=${id_team}` : ""}`
     );
     return response.data;
   },

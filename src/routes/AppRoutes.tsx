@@ -23,7 +23,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/team/join/:teamId" element={<TeamMemberRegister />} />
+      <Route path="/team/join/:id_team" element={<TeamMemberRegister />} />
       {/* Protected routes with MainLayout */}
       <Route
         path="/"
