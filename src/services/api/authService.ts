@@ -40,11 +40,10 @@ export const authService = {
           withCredentials: true,
         }
       );
+      localStorage.clear();
     } catch (error) {
       console.error("Error during logout:", error);
-    } finally {
-      localStorage.clear();
-      window.location.href = "/";
+      throw error;
     }
   },
 
