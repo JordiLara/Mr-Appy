@@ -6,7 +6,7 @@ export interface Team {
 }
 
 export interface TeamMember {
-  id: string;
+  id_user: string;
   name: string;
   email: string;
   phone: string;

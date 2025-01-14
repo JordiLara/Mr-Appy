@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { teamService } from "../../services/api";
 import { Team } from "../../types/team";
+import { useAuth } from "../../hooks/useAuth";
 
 // Mock data para usar en caso de error
 const mockTeamData: Team = {
@@ -29,6 +30,7 @@ interface ShareOption {
 }
 
 export default function TeamInvites() {
+  const { user } = useAuth();
   const [teamData, setTeamData] = useState<Team | null>(null);
   const [inviteLink, setInviteLink] = useState<string>("");
   const [copied, setCopied] = useState(false);
@@ -40,26 +42,41 @@ export default function TeamInvites() {
       try {
         setIsLoading(true);
         const team = await teamService.getCurrentTeam();
+
+        if (!team) {
+          throw new Error("No se encontró información del equipo");
+        }
+
         setTeamData(team);
 
+        // Generar el enlace de invitación solo si tenemos un ID de equipo válido
         if (team.id_team) {
           const baseUrl = window.location.origin;
-          setInviteLink(`${baseUrl}/team/join/${team.id_team}`);
+          const inviteUrl = `${baseUrl}/team/join/${team.id_team}`;
+          setInviteLink(inviteUrl);
         }
       } catch (err) {
         console.error("Error fetching team:", err);
         setError("Error al cargar la información del equipo");
-        // Usar datos mock en caso de error
-        setTeamData(mockTeamData);
+
+        // Usar datos mock en caso de error, pero mantener el ID del manager actual
+        const mockData = {
+          ...mockTeamData,
+          managerId: user?.id_user || mockTeamData.managerId,
+        };
+        setTeamData(mockData);
+
         const baseUrl = window.location.origin;
-        setInviteLink(`${baseUrl}/team/join/${mockTeamData.id_team}`);
+        setInviteLink(`${baseUrl}/team/join/${mockData.id_team}`);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchTeamData();
-  }, []);
+    if (user) {
+      fetchTeamData();
+    }
+  }, [user]);
 
   const shareOptions: ShareOption[] = [
     {
@@ -110,9 +127,11 @@ export default function TeamInvites() {
   ];
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(inviteLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (inviteLink) {
+      navigator.clipboard.writeText(inviteLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   if (isLoading) {
