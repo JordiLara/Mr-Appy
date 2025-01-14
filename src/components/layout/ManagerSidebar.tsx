@@ -11,7 +11,7 @@ import {
   UserPlus,
   Settings,
 } from "lucide-react";
-import { userService } from "../../services/api";
+import { userService, authService } from "../../services/api";
 
 export default function ManagerSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,11 +31,22 @@ export default function ManagerSidebar() {
     fetchUserProfile();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const navItems = [
-    { path: "/manager/managerdashboard", icon: LayoutDashboard, label: "Dashboard" },
+    {
+      path: "/manager/managerdashboard",
+      icon: LayoutDashboard,
+      label: "Dashboard",
+    },
     { path: "/manager/teaminvites", icon: UserPlus, label: "Invitar Equipo" },
     { path: "/manager/managerteam", icon: Users, label: "Equipo" },
-    //{ path: "/manager/analytics", icon: BarChart2, label: "Análisis" },
     { path: "/manager/reviews", icon: MessageSquare, label: "Reviews" },
   ];
 
@@ -97,13 +108,13 @@ export default function ManagerSidebar() {
           <Settings className="w-6 h-6 flex-shrink-0" />
           {!isCollapsed && <span>Ajustes</span>}
         </Link>
-        <Link
-          to="/logout"
-          className="flex items-center gap-3 text-indigo-200 hover:text-white transition-colors"
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 text-indigo-200 hover:text-white transition-colors w-full"
         >
           <LogOut className="w-6 h-6 flex-shrink-0" />
           {!isCollapsed && <span>Cerrar sesión</span>}
-        </Link>
+        </button>
       </div>
     </aside>
   );
