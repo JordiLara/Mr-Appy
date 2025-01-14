@@ -13,6 +13,14 @@ import {
 import { teamService } from "../../services/api";
 import { Team } from "../../types/team";
 
+// Mock data para usar en caso de error
+const mockTeamData: Team = {
+  id: "8",
+  name: "Equipo de Desarrollo",
+  companyName: "TechCorp",
+  managerId: "13",
+};
+
 interface ShareOption {
   name: string;
   icon: React.ElementType;
@@ -30,13 +38,20 @@ export default function TeamInvites() {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
+        setIsLoading(true);
         const team = await teamService.getCurrentTeam();
         setTeamData(team);
 
+        // Generar el enlace de invitación con el ID real del equipo
         const baseUrl = window.location.origin;
         setInviteLink(`${baseUrl}/team/join/${team.id}`);
       } catch (err) {
+        console.error("Error fetching team:", err);
         setError("Error al cargar la información del equipo");
+        // Usar datos mock en caso de error
+        setTeamData(mockTeamData);
+        const baseUrl = window.location.origin;
+        setInviteLink(`${baseUrl}/team/join/${mockTeamData.id}`);
       } finally {
         setIsLoading(false);
       }
