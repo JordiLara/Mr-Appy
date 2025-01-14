@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, Building2, Users, Briefcase } from "lucide-react";
-import { authService } from "../services/api/authService";
+import { authService } from "../services/api";
 import AuthLayout from "../auth/AuthLayout";
 import FormInput from "../components/FormInput";
 
@@ -39,20 +39,22 @@ const Register: React.FC = () => {
     }
 
     try {
-      // Excluir confirmPassword del objeto que se envía
       const { confirmPassword, ...registerData } = formData;
       const user = await authService.register(registerData);
 
       setSuccess("Usuario registrado correctamente");
 
-      // Redirigir basado en el rol del usuario
-      if (user.roles === "manager") {
-        setTimeout(() => navigate("/manager/managerdashboard"), 2000);
-      } else {
-        setTimeout(() => navigate("/activity"), 2000);
-      }
+      setTimeout(() => {
+        if (user.roles === "manager") {
+          navigate("/manager/managerdashboard");
+        } else {
+          navigate("/activity");
+        }
+      }, 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Error al registrar usuario");
+      if (!success) {
+        setError(err.response?.data?.message || "Error al registrar usuario");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +62,7 @@ const Register: React.FC = () => {
 
   return (
     <AuthLayout title="Crear cuenta de Manager">
-      {error && (
+      {error && !success && (
         <div className="bg-red-500/10 text-red-100 p-4 rounded-lg mb-6">
           {error}
         </div>

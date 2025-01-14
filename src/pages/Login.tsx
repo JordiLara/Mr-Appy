@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, replace } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import AuthLayout from "../auth/AuthLayout";
 import FormInput from "../components/FormInput";
+import { authService } from "../services/api";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,14 +24,25 @@ export default function Login() {
     setError("");
 
     try {
-      const user = await login(formData);
+      // const user = await authService.login(formData);
+      await login(formData);
 
+      if (!user) {
+        return null;
+      }
       // Obtener la ruta anterior o usar la ruta por defecto según el rol
-      const from =
-        location.state?.from?.pathname ||
-        (user.roles === "manager" ? "/manager/managerdashboard" : "/activity");
-console.log(user.roles)
-      navigate(from, { replace: true });
+      // const from =
+      //   location.state?.from?.pathname ||
+      //   (user.roles === "manager" ? "/manager/managerdashboard" : "/activity");
+      if (user.roles === "manager") {
+        console.log("entra a manager");
+        navigate("/manager/managerdashboard", { replace: true });
+      }
+      if (user.roles === "user") {
+        navigate("/activity", { replace: true });
+      }
+
+      // navigate(from, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al iniciar sesión");
     } finally {

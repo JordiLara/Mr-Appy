@@ -5,6 +5,7 @@ import {
   RegisterData,
   AuthResponse,
 } from "../../types/typesAuth";
+import { da } from "date-fns/locale";
 
 export const authService = {
   async register(data: RegisterData): Promise<User> {
@@ -16,11 +17,19 @@ export const authService = {
   },
 
   async login(credentials: LoginCredentials): Promise<User> {
-    const response = await api.post<AuthResponse>("/auth/login", credentials);
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+    const { data } = await api.post<AuthResponse>("/auth/login", credentials);
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
     }
-    return response.data.user;
+
+    return {
+      id_user: data.user.id_user,
+      email: data.user.email,
+      name: data.user.name,
+      roles: data.user.roles,
+      surname: data.user.surname,
+    };
   },
 
   async logout(): Promise<void> {

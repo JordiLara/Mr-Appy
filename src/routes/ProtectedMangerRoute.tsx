@@ -22,9 +22,9 @@ export default function ProtectedManagerRoute({ children }: Props) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (user.roles !== "manager") {
-    return <Navigate to="/activity" replace />;
-  }
+  // if (user.roles !== "manager") {
+  //   return <Navigate to="/activity" replace />;
+  // }
 
   return <>{children}</>;
 }
