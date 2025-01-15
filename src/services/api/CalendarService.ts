@@ -1,7 +1,7 @@
 import api from "./config";
 import { Mood } from "../../types";
 
-export const moodService = {
+export const calendarService = {
 
   create: async (data: Omit<Mood, "id">) => {
     const response = await api.post("/moods", data);
