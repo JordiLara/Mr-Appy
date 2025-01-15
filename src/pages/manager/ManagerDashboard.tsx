@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BarChart2, TrendingUp, Users, Calendar } from "lucide-react";
-import { moodService } from "../../services/api/calendarService";
+import { calendarService } from "../../services/api";
 
 interface TeamStats {
   averageMood: string;
@@ -24,7 +24,7 @@ export default function ManagerDashboard() {
   useEffect(() => {
     const fetchTeamStats = async () => {
       try {
-        const response = await moodService.getTeamMoods("current");
+        const response = await calendarService.getTeamMoods("current");
         setStats(response);
       } catch (err) {
         setError("Error al cargar las estadísticas del equipo");

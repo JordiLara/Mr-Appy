@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart2, TrendingUp, Calendar } from "lucide-react";
-import { moodService } from "../services/api/calendarService";
+import { calendarService } from "../services/api";
 
 interface StatsData {
   averageMood: number;
@@ -17,7 +17,7 @@ export default function Stats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await moodService.getStats();
+        const response = await calendarService.getStats();
         setStats(response);
       } catch (err) {
         setError("Error al cargar las estadísticas");
