@@ -1,4 +1,4 @@
-export { moodService } from "./CalendarService";
+export { moodService } from "./calendarService";
 export { teamService } from "./teamService";
 export { userService } from "./userService";
 export { reviewService } from "./reviewService";

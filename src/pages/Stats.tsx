@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart2, TrendingUp, Calendar } from "lucide-react";
-import { moodService } from "../services/api/CalendarService";
+import { moodService } from "../services/api/calendarService";
 
 interface StatsData {
   averageMood: number;

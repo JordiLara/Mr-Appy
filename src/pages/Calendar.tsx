@@ -8,7 +8,7 @@ import {
   subDays,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService } from "../services/api/CalendarService";
+import { moodService } from "../services/api/calendarService";
 
 interface MoodEntry {
   id: string;
