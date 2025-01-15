@@ -3,48 +3,6 @@ import { MessageSquare, Search } from "lucide-react";
 import { reviewService } from "../../services/api";
 import { Review } from "../../types/reviews";
 
-// Datos mock para usar en caso de error
-const mockReviews: Review[] = [
-  {
-    id_review: 1,
-    id_user: 1,
-    id_team: 1,
-    content:
-      "Great team collaboration today! The sprint planning went smoothly.",
-    is_anonymous: false,
-    mood: 5,
-    created_at: new Date().toISOString(),
-    author: {
-      name: "John",
-      surname: "Doe",
-    },
-  },
-  {
-    id_review: 2,
-    id_user: 2,
-    id_team: 1,
-    content:
-      "Workload is getting a bit heavy, might need to discuss task distribution.",
-    is_anonymous: true,
-    mood: 3,
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id_review: 3,
-    id_user: 3,
-    id_team: 1,
-    content:
-      "Successfully completed the feature ahead of schedule. Team support was great!",
-    is_anonymous: false,
-    mood: 4,
-    created_at: new Date(Date.now() - 172800000).toISOString(),
-    author: {
-      name: "Jane",
-      surname: "Smith",
-    },
-  },
-];
-
 const moods = [
   {
     name: "All",
@@ -109,8 +67,6 @@ export default function Reviews() {
     } catch (err) {
       setError("Error al cargar las reviews");
       console.error(err);
-      // Usar datos mock en caso de error
-      setReviews(mockReviews);
     } finally {
       setIsLoading(false);
     }
