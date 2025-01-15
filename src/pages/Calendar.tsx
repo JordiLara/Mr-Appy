@@ -5,22 +5,22 @@ import {
   startOfMonth,
   endOfMonth,
   isSameDay,
-  subDays,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { moodService } from "../services/api/calendarService";
+import { calendarService } from "../services/api";
 
-interface MoodEntry {
-  id: string;
-  created_at: string;
-  mood_type: string;
-  note: string;
-  is_anonymous: boolean;
+interface CalendarEntry {
+  date: string;
+  moodColor: string;
+  content: string;
+  mood: number;
 }
 
 export default function Calendar() {
-  const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
-  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
+  const [selectedEntry, setSelectedEntry] = useState<CalendarEntry | null>(
+    null
+  );
+  const [calendarData, setCalendarData] = useState<CalendarEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -30,79 +30,31 @@ export default function Calendar() {
     end: endOfMonth(today),
   });
 
-  useEffect(() => {
-    const fetchMoods = async () => {
-      try {
-        const response = await moodService.getUserMoods({
-          startDate: startOfMonth(today).toISOString(),
-          endDate: endOfMonth(today).toISOString(),
-        });
-        setMoodEntries(response);
-      } catch (err) {
-        setError("Error al cargar los estados de ánimo");
-        // Datos de respaldo en caso de error
-        const backupData: MoodEntry[] = [
-          {
-            id: "1",
-            created_at: subDays(today, 5).toISOString(),
-            mood_type: "amazing",
-            note: "¡Excelente día! Sprint planning muy productivo.",
-            is_anonymous: false,
-          },
-          {
-            id: "2",
-            created_at: subDays(today, 4).toISOString(),
-            mood_type: "good",
-            note: "Buen avance con el proyecto, reuniones efectivas.",
-            is_anonymous: false,
-          },
-          {
-            id: "3",
-            created_at: subDays(today, 3).toISOString(),
-            mood_type: "neutral",
-            note: "Día normal, trabajando en tareas pendientes.",
-            is_anonymous: false,
-          },
-          {
-            id: "4",
-            created_at: subDays(today, 2).toISOString(),
-            mood_type: "down",
-            note: "Algo cansado, muchas reuniones hoy.",
-            is_anonymous: false,
-          },
-          {
-            id: "5",
-            created_at: subDays(today, 1).toISOString(),
-            mood_type: "good",
-            note: "¡Viernes productivo! Cerrando tareas para el sprint.",
-            is_anonymous: false,
-          },
-        ];
-        setMoodEntries(backupData);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMoods();
-  }, []);
-
-  const getMoodColor = (moodType: string) => {
-    const colors = {
-      amazing: "bg-green-400",
-      good: "bg-blue-400",
-      neutral: "bg-yellow-400",
-      down: "bg-orange-400",
-      rough: "bg-red-400",
-    };
-    return colors[moodType as keyof typeof colors] || "bg-gray-400";
+  const fetchCalendarData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await calendarService.getUserCalendarData();
+      console.log("Datos recibidos del backend:", data); // Log para verificar los datos recibidos
+      setCalendarData(data);
+    } catch (err) {
+      setError("Error al cargar los datos del calendario");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getMoodForDay = (date: Date) => {
-    return moodEntries.find((entry) =>
-      isSameDay(new Date(entry.created_at), date)
+    const entry = calendarData.find((entry) =>
+      isSameDay(new Date(entry.date), date)
     );
+    console.log("Entrada encontrada para el día:", date, entry); // Log para verificar las entradas para cada día
+    return entry;
   };
+
+  useEffect(() => {
+    fetchCalendarData();
+  }, []);
 
   if (isLoading) {
     return <div className="text-center py-8">Cargando calendario...</div>;
@@ -129,7 +81,8 @@ export default function Calendar() {
           ))}
 
           {days.map((day) => {
-            const entry = getMoodForDay(day);
+            const entry = getMoodForDay(day); // Encuentra la entrada del día
+            console.log("Día actual:", day, "Entrada encontrada:", entry); // Log para verificar el día actual y su entrada
             return (
               <div
                 key={day.toString()}
@@ -144,9 +97,7 @@ export default function Calendar() {
                     className="absolute inset-1 flex items-center justify-center"
                   >
                     <div
-                      className={`w-12 h-12 rounded-full ${getMoodColor(
-                        entry.mood_type
-                      )} opacity-50 hover:opacity-75 transition-opacity`}
+                      className={`w-12 h-12 rounded-full ${entry.moodColor} opacity-50 hover:opacity-75 transition-opacity`}
                     />
                   </button>
                 )}
@@ -161,16 +112,14 @@ export default function Calendar() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">
-                    {format(
-                      new Date(selectedEntry.created_at),
-                      "d 'de' MMMM, yyyy",
-                      {
-                        locale: es,
-                      }
-                    )}
+                    {format(new Date(selectedEntry.date), "d 'de' MMMM, yyyy", {
+                      locale: es,
+                    })}
                   </h3>
-                  <p className="text-gray-500">
-                    Estado de ánimo: {selectedEntry.mood_type}
+                  <p className="text-gray-500 flex items-center gap-2">
+                    <span>Estado de ánimo:</span>
+                    <span className="text-xl">{selectedEntry.mood}</span>{" "}
+                    {/* Aquí podrías cambiar por getMoodEmoji si necesitas mostrar el emoji */}
                   </p>
                 </div>
                 <button
@@ -180,7 +129,7 @@ export default function Calendar() {
                   ×
                 </button>
               </div>
-              <p className="text-gray-700">{selectedEntry.note}</p>
+              <p className="text-gray-700">{selectedEntry.content}</p>
             </div>
           </div>
         )}
