@@ -23,4 +23,13 @@ export const reviewService = {
     });
     return response.data.review;
   },
+
+  getTeamReviews: async (): Promise<Review[]> => {
+    const response = await api.get<{
+      code: number;
+      message: string;
+      reviews: Review[];
+    }>("/review/team");
+    return response.data.reviews;
+  },
 };
