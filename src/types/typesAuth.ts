@@ -17,7 +17,7 @@ export interface RegisterData {
   name: string;
   surname: string;
   employeeRole: string;
-  roles: "manager" | "user";
+  roles: string;
   id_team?: string | number;
   companyName?: string;
   teamName?: string;
