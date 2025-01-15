@@ -55,14 +55,10 @@ export default function Reviews() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
   const fetchReviews = async () => {
     try {
       setIsLoading(true);
-      const response = await reviewService.getReviews();
+      const response = await reviewService.getTeamReviews();
       setReviews(response);
     } catch (err) {
       setError("Error al cargar las reviews");
@@ -71,6 +67,10 @@ export default function Reviews() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   const getMoodType = (moodValue: number) => {
     const mood = moods.find((m) => m.value === moodValue);
@@ -85,7 +85,7 @@ export default function Reviews() {
       const matchesSearch =
         review.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (!review.is_anonymous &&
-          review.author?.name
+          `${review.author?.name} ${review.author?.surname}`
             .toLowerCase()
             .includes(searchQuery.toLowerCase()));
       return matchesMood && matchesSearch;
@@ -185,6 +185,7 @@ export default function Reviews() {
                   </div>
                   <p className="text-gray-700">{review.content}</p>
                   <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+                    {/* Esta parte será implementada en el futuro */}
                     <button className="flex items-center gap-1 hover:text-blue-600 transition-colors">
                       <MessageSquare className="w-4 h-4" />
                       <span>Reply</span>
