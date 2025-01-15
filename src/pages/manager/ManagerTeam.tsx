@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Users, Mail, Briefcase } from "lucide-react";
 import { teamService } from "../../services/api";
 import type { TeamMember } from "../../types/team";
