@@ -1,4 +1,4 @@
-import api from "../services/api/config";
+import api from "../api/config"
 
 export const dashboardService = {
   getMoods: async () => {
@@ -12,5 +12,9 @@ export const dashboardService = {
   getActivity: async () => {
     const response = await api.get("/dashboard/activity");
     return response.data.activity;
+  },
+  getTeamSize: async () => {
+    const response = await api.get("/dashboard/team-size"); // Ajusta la ruta según tu backend
+    return response.data;
   },
 };

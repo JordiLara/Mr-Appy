@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
-import { dashboardService } from "../../services/dashboardService";
+import { dashboardService } from "../../services/api/dashboardService";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 
-// Chart.js en versiones recientes requiere registrar explícitamente las escalas, herramientas y otros componentes necesarios.
+// Es necesario registrar todos los componentes
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
   Legend
@@ -26,41 +30,47 @@ interface MoodData {
 }
 
 interface Review {
-  User: {
-    name: string;
-    surname: string;
-  };
   id_review: number;
   content: string;
   mood: number;
   created_at: string;
 }
 
-interface Activity {
-  created_at: string;
-  content: string;
-  mood: number;
-}
-
 export default function ManagerDashboard() {
   const [moods, setMoods] = useState<MoodData>({});
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [activity, setActivity] = useState<Activity[]>([]);
+  const [teamSize, setTeamSize] = useState(0);
+  const [reviewsToday, setReviewsToday] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const moodColors: Record<number, string> = {
+    5: "#22C55E", // Esmeralda
+    4: "#10B981", // Verde
+    3: "#EAB308", // Amarillo
+    2: "#F97316", // Naranja
+    1: "#EF4444", // Rojo
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [moodsData, reviewsData, activityData] = await Promise.all([
+        const [moodsData, reviewsData, teamData] = await Promise.all([
           dashboardService.getMoods(),
           dashboardService.getReviews(),
-          dashboardService.getActivity(),
+          dashboardService.getTeamSize(),
         ]);
         setMoods(moodsData);
         setReviews(reviewsData);
-        setActivity(activityData);
+        setTeamSize(teamData.totalMembers);
+
+        // Calcular reviews de hoy
+        const today = new Date().toISOString().split("T")[0];
+        const todayReviews = reviewsData.filter((review: any) =>
+          review.created_at.startsWith(today)
+        ).length;
+        setReviewsToday(todayReviews);
       } catch (err) {
         setError("Error al cargar los datos del dashboard");
         console.error(err);
@@ -72,35 +82,45 @@ export default function ManagerDashboard() {
     fetchData();
   }, []);
 
-  const moodLabels = Object.keys(moods).map((key) => `Mood ${key}`);
-  const moodValues = Object.values(moods);
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Estados de Ánimo del Equipo",
-      },
-    },
-  };
-
-  const chartData = {
-    labels: moodLabels,
+  const barData = {
+    labels: Object.keys(moods).map((key) => `Mood ${key}`),
     datasets: [
       {
-        label: "Estados de ánimo",
-        data: moodValues,
-        backgroundColor: [
-          "#10B981", // Mood 5
-          "#22C55E", // Mood 4
-          "#EAB308", // Mood 3
-          "#F97316", // Mood 2
-          "#EF4444", // Mood 1
-        ],
+        label: "Moods",
+        data: Object.values(moods),
+        backgroundColor: Object.values(moodColors),
+      },
+    ],
+  };
+
+  const lineData = {
+    labels: [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo",
+    ],
+    datasets: [
+      {
+        label: "Promedio de moods",
+        data: Array(7)
+          .fill(0)
+          .map((_, i) => {
+            const dayReviews = reviews.filter(
+              (review) => new Date(review.created_at).getDay() === (i + 1) % 7
+            );
+            const totalMood = dayReviews.reduce(
+              (sum, review) => sum + review.mood,
+              0
+            );
+            return dayReviews.length ? totalMood / dayReviews.length : 0;
+          }),
+        borderColor: "#10B981",
+        backgroundColor: "rgba(16, 185, 129, 0.2)",
+        tension: 0.4,
       },
     ],
   };
@@ -115,55 +135,39 @@ export default function ManagerDashboard() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Manager Dashboard</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">Manager Dashboard</h1>
 
-      {/* Gráfico de estados de ánimo */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Estados de Ánimo</h2>
-        <Bar data={chartData} options={chartOptions} />
+      {/* Marcador de reviews recibidas */}
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 className="text-lg font-semibold mb-4">Estado del Día</h2>
+        <p className="text-2xl font-bold">
+          {reviewsToday}/{teamSize} reviews recibidas
+        </p>
       </div>
 
-      {/* Reseñas recientes */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Reseñas Recientes</h2>
-        <ul className="space-y-4">
-          {reviews.map((review) => (
-            <li key={review.id_review} className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg font-semibold">
-                {review.mood}
-              </div>
-              <div>
-                <p className="font-medium">
-                  {review.User.name} {review.User.surname}
-                </p>
-                <p className="text-gray-600">{review.content}</p>
-                <p className="text-gray-400 text-sm">
-                  {new Date(review.created_at).toLocaleString()}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Actividad reciente */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Actividad Reciente</h2>
-        <ul className="space-y-4">
-          {activity.map((item, index) => (
-            <li key={index} className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg font-semibold">
-                {item.mood}
-              </div>
-              <div>
-                <p className="text-gray-600">{item.content}</p>
-                <p className="text-gray-400 text-sm">
-                  {new Date(item.created_at).toLocaleString()}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-center">
+            Gráfico de Barras
+          </h2>
+          <Bar data={barData} options={{ responsive: true }} />
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-center">
+            Gráfico de Líneas
+          </h2>
+          <Line
+            data={lineData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { position: "top" },
+                title: { display: true, text: "Evolución de Moods por Semana" },
+              },
+            }}
+          />
+        </div>
       </div>
     </div>
   );
