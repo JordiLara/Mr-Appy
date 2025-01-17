@@ -85,7 +85,7 @@ export default function Reviews() {
       const matchesSearch =
         review.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (!review.is_anonymous &&
-          `${review.author?.name} ${review.author?.surname}`
+          `${review.User?.name} ${review.User?.surname}`
             .toLowerCase()
             .includes(searchQuery.toLowerCase()));
       return matchesMood && matchesSearch;
@@ -167,7 +167,7 @@ export default function Reviews() {
                         <span className="font-medium text-gray-900">
                           {review.is_anonymous
                             ? "Anonymous"
-                            : `${review.author?.name} ${review.author?.surname}`}
+                            : `${review.User?.name} ${review.User?.surname}`}
                         </span>
                         <span className="text-sm text-gray-500">
                           {new Date(review.created_at).toLocaleDateString()}

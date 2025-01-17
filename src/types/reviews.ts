@@ -6,7 +6,7 @@ export interface Review {
   is_anonymous: boolean;
   mood: number;
   created_at: string;
-  author?: {
+  User?: {
     name: string;
     surname: string;
   };
