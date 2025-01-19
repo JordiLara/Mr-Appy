@@ -169,6 +169,32 @@ export default function ManagerDashboard() {
           />
         </div>
       </div>
+
+      {/* Actividad Reciente */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-lg font-semibold mb-4">Actividad Reciente</h2>
+        <ul className="space-y-4">
+          {reviews.slice(0, 5).map((review) => (
+            <li
+              key={review.id_review}
+              className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg"
+            >
+              <div
+                className={`flex items-center justify-center w-10 h-10 rounded-full text-white`}
+                style={{ backgroundColor: moodColors[review.mood] }}
+              >
+                {review.mood}
+              </div>
+              <div>
+                <p className="text-gray-700">{review.content}</p>
+                <p className="text-sm text-gray-500">
+                  {new Date(review.created_at).toLocaleString()}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
