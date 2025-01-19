@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 
-// Es necesario registrar todos los componentes
+// Registrar los componentes necesarios de Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -52,6 +52,14 @@ export default function ManagerDashboard() {
     1: "#EF4444", // Rojo
   };
 
+  const moodEmojis: Record<number, string> = {
+    5: "😊",
+    4: "🙂",
+    3: "😐",
+    2: "😕",
+    1: "🙁",
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,13 +69,14 @@ export default function ManagerDashboard() {
           dashboardService.getReviews(),
           dashboardService.getTeamSize(),
         ]);
+
         setMoods(moodsData);
         setReviews(reviewsData);
         setTeamSize(teamData.totalMembers);
 
         // Calcular reviews de hoy
         const today = new Date().toISOString().split("T")[0];
-        const todayReviews = reviewsData.filter((review: any) =>
+        const todayReviews = reviewsData.filter((review: { created_at: string; }) =>
           review.created_at.startsWith(today)
         ).length;
         setReviewsToday(todayReviews);
@@ -183,7 +192,7 @@ export default function ManagerDashboard() {
                 className={`flex items-center justify-center w-10 h-10 rounded-full text-white`}
                 style={{ backgroundColor: moodColors[review.mood] }}
               >
-                {review.mood}
+                {moodEmojis[review.mood]}
               </div>
               <div>
                 <p className="text-gray-700">{review.content}</p>

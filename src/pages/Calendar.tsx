@@ -24,6 +24,14 @@ export default function Calendar() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const moodEmojis: Record<number, string> = {
+    5: "😊",
+    4: "🙂",
+    3: "😐",
+    2: "😕",
+    1: "🙁",
+  };
+
   const today = new Date();
   const days = eachDayOfInterval({
     start: startOfMonth(today),
@@ -34,7 +42,6 @@ export default function Calendar() {
     try {
       setIsLoading(true);
       const data = await calendarService.getUserCalendarData();
-      console.log("Datos recibidos del backend:", data); // Log para verificar los datos recibidos
       setCalendarData(data);
     } catch (err) {
       setError("Error al cargar los datos del calendario");
@@ -45,11 +52,7 @@ export default function Calendar() {
   };
 
   const getMoodForDay = (date: Date) => {
-    const entry = calendarData.find((entry) =>
-      isSameDay(new Date(entry.date), date)
-    );
-    console.log("Entrada encontrada para el día:", date, entry); // Log para verificar las entradas para cada día
-    return entry;
+    return calendarData.find((entry) => isSameDay(new Date(entry.date), date));
   };
 
   useEffect(() => {
@@ -81,8 +84,7 @@ export default function Calendar() {
           ))}
 
           {days.map((day) => {
-            const entry = getMoodForDay(day); // Encuentra la entrada del día
-            console.log("Día actual:", day, "Entrada encontrada:", entry); // Log para verificar el día actual y su entrada
+            const entry = getMoodForDay(day);
             return (
               <div
                 key={day.toString()}
@@ -118,8 +120,11 @@ export default function Calendar() {
                   </h3>
                   <p className="text-gray-500 flex items-center gap-2">
                     <span>Estado de ánimo:</span>
-                    <span className="text-xl">{selectedEntry.mood}</span>{" "}
-                    {/* Aquí podrías cambiar por getMoodEmoji si necesitas mostrar el emoji */}
+                    <span
+                      className={`flex items-center justify-center w-8 h-8 rounded-full text-white ${selectedEntry.moodColor}`}
+                    >
+                      {moodEmojis[selectedEntry.mood]}
+                    </span>
                   </p>
                 </div>
                 <button
