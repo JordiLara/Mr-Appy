@@ -76,8 +76,9 @@ export default function ManagerDashboard() {
 
         // Calcular reviews de hoy
         const today = new Date().toISOString().split("T")[0];
-        const todayReviews = reviewsData.filter((review: { created_at: string; }) =>
-          review.created_at.startsWith(today)
+        const todayReviews = reviewsData.filter(
+          (review: { created_at: string }) =>
+            review.created_at.startsWith(today)
         ).length;
         setReviewsToday(todayReviews);
       } catch (err) {
