@@ -25,7 +25,7 @@ export default function Team() {
 
         // Fetch team data and members
         const team = await teamService.getCurrentTeam();
-        const members = await teamService.getMembers(team.id_team);
+        const members = await teamService.getMembers();
 
         setTeamData({
           id_team: team.id_team,

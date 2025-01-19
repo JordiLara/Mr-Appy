@@ -7,7 +7,7 @@ import {
   isSameDay,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { calendarService } from "../services/api";
+import { calendarService } from "../services/api/calendarService";
 
 interface CalendarEntry {
   date: string;
