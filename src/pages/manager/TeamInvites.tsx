@@ -28,7 +28,7 @@ export default function TeamInvites() {
         setIsLoading(true);
         const team = await teamService.getCurrentTeam();
         setTeamData(team);
-        
+
         if (team.id_team) {
           const baseUrl = window.location.origin;
           setInviteLink(`${baseUrl}/team/join/${team.id_team}`);
@@ -129,7 +129,9 @@ export default function TeamInvites() {
                   color: "bg-indigo-500 hover:bg-indigo-600",
                   onClick: () =>
                     window.open(
-                      `https://discord.com/share?url=${encodeURIComponent(inviteLink)}`
+                      `https://discord.com/share?url=${encodeURIComponent(
+                        inviteLink
+                      )}`
                     ),
                 },
                 {
@@ -138,7 +140,9 @@ export default function TeamInvites() {
                   color: "bg-green-600 hover:bg-green-700",
                   onClick: () =>
                     window.open(
-                      `https://slack.com/share?url=${encodeURIComponent(inviteLink)}`
+                      `https://slack.com/share?url=${encodeURIComponent(
+                        inviteLink
+                      )}`
                     ),
                 },
                 {
@@ -147,7 +151,9 @@ export default function TeamInvites() {
                   color: "bg-red-500 hover:bg-red-600",
                   onClick: () =>
                     window.open(
-                      `https://meet.google.com/new?url=${encodeURIComponent(inviteLink)}`
+                      `https://meet.google.com/new?url=${encodeURIComponent(
+                        inviteLink
+                      )}`
                     ),
                 },
                 {
