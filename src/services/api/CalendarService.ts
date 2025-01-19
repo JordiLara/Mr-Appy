@@ -2,7 +2,6 @@ import api from "./config";
 import { Mood } from "../../types";
 
 export const calendarService = {
-
   create: async (data: Omit<Mood, "id">) => {
     const response = await api.post("/moods", data);
     return response.data;
@@ -25,6 +24,11 @@ export const calendarService = {
     const response = await api.get(
       `/moods/stats${id_team ? `?id_team=${id_team}` : ""}`
     );
+    return response.data;
+  },
+
+  getUserStats: async () => {
+    const response = await api.get("/api/stats");
     return response.data;
   },
 
