@@ -17,11 +17,10 @@ export default function Stats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await calendarService.getStats();
+        const response = await calendarService.getUserStats();
         setStats(response);
       } catch (err) {
         setError("Error al cargar las estadísticas");
-        // Usar datos de respaldo en caso de error
         setStats({
           averageMood: 4.2,
           monthlyEntries: 15,
