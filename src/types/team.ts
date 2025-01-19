@@ -28,3 +28,12 @@ export interface TeamMembersResponse {
   message: string;
   users: TeamMember[];
 }
+
+export interface TeamData {
+  id_team: string;
+  team_name: string;
+  company_name: string;
+  id_user_manager: string;
+  totalMembers: number;
+  members: TeamMember[];
+}

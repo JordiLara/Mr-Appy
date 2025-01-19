@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Users, Mail, Phone, MapPin } from "lucide-react";
 import { teamService } from "../services/api";
 import { TeamMember } from "../types/team";
 
 interface TeamData {
-  id: string;
-  name: string;
+  id_team: string;
+  team_name: string;
+  company_name: string;
+  id_user_manager: string;
   totalMembers: number;
   members: TeamMember[];
 }
@@ -19,34 +21,23 @@ export default function Team() {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
+        setIsLoading(true);
+
+        // Fetch team data and members
         const team = await teamService.getCurrentTeam();
-        const members = await teamService.getMembers(team.id);
+        const members = await teamService.getMembers(team.id_team);
+
         setTeamData({
-          ...team,
+          id_team: team.id_team,
+          team_name: team.team_name,
+          company_name: team.company_name,
+          id_user_manager: team.id_user_manager,
           totalMembers: members.length,
           members,
         });
       } catch (err) {
+        console.error("Error fetching team data:", err);
         setError("Error al cargar la información del equipo");
-        // Datos de respaldo en caso de fallo del backend
-        setTeamData({
-          id: "1",
-          name: "Equipo de Desarrollo",
-          totalMembers: 3,
-          members: [
-            {
-              id: "1",
-              name: "Ana García",
-              email: "ana.garcia@example.com",
-              phone: "+34 666 777 888",
-              location: "Madrid",
-              roles: ["Frontend Developer"],
-              avatar:
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-              joinedAt: "2024-01-01",
-            },
-          ],
-        });
       } finally {
         setIsLoading(false);
       }
@@ -82,7 +73,7 @@ export default function Team() {
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-bold">{teamData?.name}</h2>
+            <h2 className="text-lg font-bold">{teamData?.team_name}</h2>
             <p className="text-gray-600">{teamData?.totalMembers} miembros</p>
           </div>
         </div>
@@ -90,7 +81,7 @@ export default function Team() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {teamData?.members.map((member) => (
             <div
-              key={member.id}
+              key={member.id_user}
               onClick={() => setSelectedMember(member)}
               className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer"
             >
