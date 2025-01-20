@@ -15,15 +15,15 @@ const features: Feature[] = [
   },
   {
     icon: BarChart2,
-    title: "Powerful Analytics",
+    title: "Análisis Potentes",
     description:
-      "Give managers the tools and insights they need to support their teams effectively.",
+      "Brinda a los gerentes las herramientas y la información que necesitan para apoyar a sus equipos de manera efectiva.",
   },
   {
     icon: Trophy,
-    title: "Team Management",
+    title: "Gestión de Equipos",
     description:
-      "Encourage participation through achievements, badges, and team milestones.",
+      "Fomenta la participación a través de logros, insignias y hitos del equipo.",
   },
 ];
 
@@ -33,10 +33,11 @@ const Features: React.FC = (): JSX.Element => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-            Everything you need to track team wellness
+            Todo lo que necesitas para rastrear el bienestar de tu equipo
           </h2>
           <p className="mt-4 text-xl text-gray-600">
-            Simple tools to help you understand and improve team morale
+            Herramientas simples para ayudarte a comprender y mejorar la moral
+            del equipo
           </p>
         </div>
 

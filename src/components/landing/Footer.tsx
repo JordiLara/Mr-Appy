@@ -11,17 +11,18 @@ const Footer: React.FC = () => {
               <span className="text-2xl font-bold text-white">MrAppy</span>
             </div>
             <p className="text-gray-400 max-w-md">
-              The simplest tool to keep your team happy and motivated. Track
-              morale, gather insights, and build a better workplace culture.
+              La herramienta más sencilla para mantener a tu equipo feliz y
+              motivado. Rastrea la moral, recopila información y construye una
+              mejor cultura laboral.
             </p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Help</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Ayuda</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#faq" className="hover:text-white transition-colors">
-                  FAQ
+                  Preguntas frecuentes
                 </a>
               </li>
               <li>
@@ -29,18 +30,18 @@ const Footer: React.FC = () => {
                   href="#contact"
                   className="hover:text-white transition-colors"
                 >
-                  Contact Us
+                  Contáctanos
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Compañía</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#about" className="hover:text-white transition-colors">
-                  About Us
+                  Sobre nosotros
                 </a>
               </li>
               <li>
@@ -48,12 +49,12 @@ const Footer: React.FC = () => {
                   href="#privacy"
                   className="hover:text-white transition-colors"
                 >
-                  Privacy Policy
+                  Política de privacidad
                 </a>
               </li>
               <li>
                 <a href="#terms" className="hover:text-white transition-colors">
-                  Terms of Service
+                  Términos de servicio
                 </a>
               </li>
             </ul>
@@ -61,7 +62,9 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} MrAppy. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} MrAppy. Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </footer>

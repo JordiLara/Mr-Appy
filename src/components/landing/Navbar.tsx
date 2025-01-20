@@ -16,14 +16,14 @@ const Navbar: React.FC = () => {
               href="#features"
               className="flex items-center text-blue-100 hover:text-white transition-colors"
             >
-              Features
+              Características
               <ChevronRight className="ml-2"/>
             </a>
             <a
               href="#pricing"
               className="flex items-center text-blue-100 hover:text-white transition-colors"
             >
-              Pricing
+              Precios
               <ChevronRight className="ml-2"/>
             </a>
           </div>
@@ -33,13 +33,13 @@ const Navbar: React.FC = () => {
               to="/login"
               className="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
             >
-              Log In →
+              Iniciar sesión →
             </Link>
             <Link
               to="/register"
               className="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 font-medium hover:bg-yellow-500 transition-colors"
             >
-              Register
+              Registrarse
             </Link>
           </div>
         </div>

@@ -6,19 +6,19 @@ const Hero: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-           
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              The simplest tool to keep your team happy and motivated.
+              La herramienta más sencilla para mantener a tu equipo feliz y
+              motivado.
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              30 seconds a day per team member provides valuable data and
-              insights for leaders and managers.
+              30 segundos al día por miembro del equipo proporcionan datos e
+              información valiosa para líderes y gerentes.
             </p>
             <Link
               to="/register"
               className="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-lg transition-colors"
             >
-              Get Started as a Team Lead →
+              Comienza como Líder de Equipo →
             </Link>
           </div>
           <div className="hidden lg:block">
