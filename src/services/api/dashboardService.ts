@@ -1,20 +1,14 @@
-import api from "../api/config";
+import { fetchData } from "./apiUtils";
 
 export const dashboardService = {
-  getMoods: async () => {
-    const response = await api.get("/dashboard/moods");
-    return response.data.data;
-  },
+  getMoods: () => fetchData("/dashboard/moods"),
   getReviews: async () => {
-    const response = await api.get("/dashboard/reviews");
-    return response.data.reviews;
+    const data = await fetchData("/dashboard/reviews");
+    return data.reviews;
   },
   getActivity: async () => {
-    const response = await api.get("/dashboard/activity");
-    return response.data.activity;
+    const data = await fetchData("/dashboard/activity");
+    return data.activity;
   },
-  getTeamSize: async () => {
-    const response = await api.get("/dashboard/team-size");
-    return response.data;
-  },
+  getTeamSize: () => fetchData("/dashboard/team-size"),
 };
