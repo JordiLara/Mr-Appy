@@ -9,7 +9,7 @@ interface Feature {
 const features: Feature[] = [
   {
     icon: Smile,
-    title: "Control sencillo del estado anímico:",
+    title: "Control sencillo del estado anímico",
     description:
       "Monitoriza tu estado de ánimo diario fácilmente con iconos intuitivos y entradas rápidas.",
   },
