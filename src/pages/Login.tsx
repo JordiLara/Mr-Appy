@@ -7,7 +7,7 @@ import FormInput from "../components/FormInput";
 
 export default function Login() {
   const navigate = useNavigate();
-  
+
   const { login, user } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -34,7 +34,6 @@ export default function Login() {
       if (user.roles === "user") {
         navigate("/activity", { replace: true });
       }
-
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al iniciar sesión");
     } finally {
