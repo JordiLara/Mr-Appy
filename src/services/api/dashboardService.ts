@@ -14,7 +14,7 @@ export const dashboardService = {
     return response.data.activity;
   },
   getTeamSize: async () => {
-    const response = await api.get("/dashboard/team-size"); // Ajusta la ruta según tu backend
+    const response = await api.get("/dashboard/team-size");
     return response.data;
   },
 };
