@@ -9,9 +9,9 @@ interface Feature {
 const features: Feature[] = [
   {
     icon: Smile,
-    title: "Simple Mood Tracking",
+    title: "Control sencillo del estado anímico:",
     description:
-      "Record your daily morale easily with intuitive icons and quick inputs.",
+      "Monitoriza tu estado de ánimo diario fácilmente con iconos intuitivos y entradas rápidas.",
   },
   {
     icon: BarChart2,
