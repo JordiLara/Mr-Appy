@@ -29,7 +29,6 @@ export default function Login() {
         return null;
       }
       if (user.roles === "manager") {
-        console.log("entra a manager");
         navigate("/manager/managerdashboard", { replace: true });
       }
       if (user.roles === "user") {
