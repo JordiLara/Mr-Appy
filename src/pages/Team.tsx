@@ -93,7 +93,9 @@ export default function Team() {
                 />
                 <div>
                   <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-gray-600">{member.roles[0]}</p>
+                  <p className="text-sm text-gray-600">
+                    {member.employee_role}
+                  </p>
                 </div>
               </div>
             </div>
