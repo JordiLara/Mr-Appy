@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
               to="/login"
               className="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
             >
-              Iniciar sesións →
+              Iniciar sesión →
             </Link>
             <Link
               to="/register"
