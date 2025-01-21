@@ -10,7 +10,7 @@ export const authService = {
   async register(data: RegisterData): Promise<User> {
     const response = await api.post<AuthResponse>("/auth/register", data);
     if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+      this.setToken(response.data.token);
     }
     return response.data.user;
   },
@@ -19,16 +19,10 @@ export const authService = {
     const { data } = await api.post<AuthResponse>("/auth/login", credentials);
 
     if (data.token) {
-      localStorage.setItem("token", data.token);
+      this.setToken(data.token);
     }
 
-    return {
-      id_user: data.user.id_user,
-      email: data.user.email,
-      name: data.user.name,
-      roles: data.user.roles,
-      surname: data.user.surname,
-    };
+    return data.user;
   },
 
   async logout(): Promise<void> {
@@ -40,7 +34,7 @@ export const authService = {
           withCredentials: true,
         }
       );
-      localStorage.clear();
+      this.clearToken();
     } catch (error) {
       console.error("Error during logout:", error);
       throw error;
@@ -54,5 +48,17 @@ export const authService = {
     } catch (error) {
       return null;
     }
+  },
+
+  setToken(token: string) {
+    localStorage.setItem("token", token);
+  },
+
+  getToken(): string | null {
+    return localStorage.getItem("token");
+  },
+
+  clearToken() {
+    localStorage.removeItem("token");
   },
 };

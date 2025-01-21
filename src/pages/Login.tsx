@@ -8,7 +8,7 @@ import FormInput from "../components/FormInput";
 export default function Login() {
   const navigate = useNavigate();
 
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,15 +23,11 @@ export default function Login() {
     setError("");
 
     try {
-      await login(formData);
+      const loggedInUser = await login(formData);
 
-      if (!user) {
-        return null;
-      }
-      if (user.roles === "manager") {
+      if (loggedInUser.roles === "manager") {
         navigate("/manager/managerdashboard", { replace: true });
-      }
-      if (user.roles === "user") {
+      } else if (loggedInUser.roles === "user") {
         navigate("/activity", { replace: true });
       }
     } catch (err: any) {

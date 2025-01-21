@@ -16,6 +16,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const user = await authService.getCurrentUser();
       setUser(user);
