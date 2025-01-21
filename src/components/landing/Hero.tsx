@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Hero: React.FC = () => {
   return (
-    <div className="bg-gradient-to-br from-blue-600 to-purple-700 min-h-[85vh] flex items-center relative overflow-hidden">
+    <div className="bg-gradient-to-br from-blue-600 to-purple-700 min-h-screen flex items-center relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
