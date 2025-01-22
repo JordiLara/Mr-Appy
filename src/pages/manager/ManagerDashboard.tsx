@@ -104,29 +104,8 @@ export default function ManagerDashboard() {
     datasets: [
       {
         label: "Distribución de Moods",
-        data: [5, 4, 3, 2, 1].map((mood) => {
-          const today = new Date();
-          const sevenDaysAgo = new Date(today);
-          sevenDaysAgo.setDate(today.getDate() - 7);
-
-          const filteredReviews = reviews.filter((review) => {
-            const reviewDate = new Date(review.created_at);
-            return (
-              review.mood === mood &&
-              reviewDate >= sevenDaysAgo &&
-              reviewDate <= today
-            );
-          });
-
-          return filteredReviews.length;
-        }),
-        backgroundColor: [
-          "#10B981",
-          "#22C55E",
-          "#EAB308",
-          "#F97316",
-          "#EF4444",
-        ],
+        data: [5, 4, 3, 2, 1].map((mood) => moods[mood] || 0),
+        backgroundColor: Object.values(moodColors),
       },
     ],
   };
@@ -147,13 +126,11 @@ export default function ManagerDashboard() {
         data: Array(7)
           .fill(0)
           .map((_, i) => {
-            // Filtrar las reviews para el día específico de la semana
             const dayReviews = reviews.filter((review) => {
               const reviewDay = new Date(review.created_at).getDay();
               return reviewDay === i;
             });
 
-            // Calcular el promedio del mood para el día
             const totalMood = dayReviews.reduce(
               (sum, review) => sum + review.mood,
               0
