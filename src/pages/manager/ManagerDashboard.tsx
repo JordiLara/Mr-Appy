@@ -64,6 +64,7 @@ export default function ManagerDashboard() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+
         const [moodsData, reviewsData, teamData] = await Promise.all([
           dashboardService.getMoods(),
           dashboardService.getReviews(),
@@ -74,13 +75,19 @@ export default function ManagerDashboard() {
         setReviews(reviewsData);
         setTeamSize(teamData.totalMembers);
 
-        // Calcular reviews de hoy
-        const today = new Date().toISOString().split("T")[0];
-        const todayReviews = reviewsData.filter(
-          (review: { created_at: string }) =>
-            review.created_at.startsWith(today)
-        ).length;
-        setReviewsToday(todayReviews);
+        // Filtrar reviews en los últimos 7 días
+        const today = new Date();
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+
+        const recentReviews = reviewsData.filter(
+          (review: { created_at: string }) => {
+            const reviewDate = new Date(review.created_at);
+            return reviewDate >= sevenDaysAgo && reviewDate <= today;
+          }
+        );
+
+        setReviewsToday(recentReviews.length);
       } catch (err) {
         setError("Error al cargar los datos del dashboard");
         console.error(err);
@@ -93,12 +100,33 @@ export default function ManagerDashboard() {
   }, []);
 
   const barData = {
-    labels: Object.keys(moods).map((key) => `Mood ${key}`),
+    labels: ["Mood 5", "Mood 4", "Mood 3", "Mood 2", "Mood 1"],
     datasets: [
       {
-        label: "Moods",
-        data: Object.values(moods),
-        backgroundColor: Object.values(moodColors),
+        label: "Distribución de Moods",
+        data: [5, 4, 3, 2, 1].map((mood) => {
+          const today = new Date();
+          const sevenDaysAgo = new Date(today);
+          sevenDaysAgo.setDate(today.getDate() - 7);
+
+          const filteredReviews = reviews.filter((review) => {
+            const reviewDate = new Date(review.created_at);
+            return (
+              review.mood === mood &&
+              reviewDate >= sevenDaysAgo &&
+              reviewDate <= today
+            );
+          });
+
+          return filteredReviews.length;
+        }),
+        backgroundColor: [
+          "#10B981",
+          "#22C55E",
+          "#EAB308",
+          "#F97316",
+          "#EF4444",
+        ],
       },
     ],
   };
@@ -177,7 +205,10 @@ export default function ManagerDashboard() {
               responsive: true,
               plugins: {
                 legend: { position: "top" },
-                title: { display: true, text: "Evolución del estado de ánimo por Semana" },
+                title: {
+                  display: true,
+                  text: "Evolución del estado de ánimo por Semana",
+                },
               },
             }}
           />
