@@ -115,13 +115,17 @@ export default function ManagerDashboard() {
     ],
     datasets: [
       {
-        label: "Promedio de moods",
+        label: "Promedio de estado",
         data: Array(7)
           .fill(0)
           .map((_, i) => {
-            const dayReviews = reviews.filter(
-              (review) => new Date(review.created_at).getDay() === (i + 1) % 7
-            );
+            // Filtrar las reviews para el día específico de la semana
+            const dayReviews = reviews.filter((review) => {
+              const reviewDay = new Date(review.created_at).getDay();
+              return reviewDay === i;
+            });
+
+            // Calcular el promedio del mood para el día
             const totalMood = dayReviews.reduce(
               (sum, review) => sum + review.mood,
               0
@@ -159,13 +163,13 @@ export default function ManagerDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4 text-center">
-            Gráfico de Barras
+            Gráfico de control de estados
           </h2>
           <Bar data={barData} options={{ responsive: true }} />
         </div>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4 text-center">
-            Gráfico de Líneas
+            Gráfico de ánimo
           </h2>
           <Line
             data={lineData}
@@ -173,7 +177,7 @@ export default function ManagerDashboard() {
               responsive: true,
               plugins: {
                 legend: { position: "top" },
-                title: { display: true, text: "Evolución de Moods por Semana" },
+                title: { display: true, text: "Evolución del estado de ánimo por Semana" },
               },
             }}
           />
