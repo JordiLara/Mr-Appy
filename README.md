@@ -12,6 +12,7 @@
 ## Descripción General
 MrAppy es una herramienta que ayuda a los líderes de equipos a gestionar el bienestar y la moral de sus miembros. A través de un diseño moderno y funcionalidades intuitivas, los usuarios pueden registrar su estado de ánimo diario, los gerentes pueden monitorear estadísticas clave y gestionar equipos de forma efectiva.
 
+Podrás encontrar el backend de esta aplicación, aquí: https://github.com/JordiLara/Backend-Mr-Appy.git
 ---
 
 ## Tecnologías Utilizadas
@@ -117,7 +118,7 @@ src/
 ### **Pasos para Instalar**
 1. Clonar el repositorio:
    ```bash
-   git clone (https://github.com/JordiLara/ITACADEMY-9.0-Ending-Project-Mr-Appy.git)
+   git clone https://github.com/JordiLara/Mr-Appy.git
    ```
 2. Instalar dependencias:
    ```bash
@@ -159,7 +160,7 @@ src/
 
 - **Mejoras de UI/UX:** Ajustes adicionales basados en pruebas con usuarios.
 - **Soporte Multilenguaje:** Expansión para otros idiomas.
-
+- **Mejoras de usabilidad:** 
 ---
 
 ## Contribución
@@ -174,5 +175,5 @@ Si quieres contribuir a este proyecto, por favor sigue estos pasos:
 
 ---
 
-Si tienes preguntas o comentarios, ¡no dudes en contactarnos! 😊
+Si tienes preguntas o comentarios, ¡no dudes en contactarme! 😊
 
