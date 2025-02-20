@@ -1,3 +1,10 @@
+
+![Landing-Mr Appy](https://github.com/user-attachments/assets/20329e20-1f57-47d7-a421-e63c90cfce1c)
+![Landing-lower-Mr Appy](https://github.com/user-attachments/assets/912e5fa5-55e8-48ec-aa61-6c9e2baaa05f)
+![manager-dashboard-Mr Appy](https://github.com/user-attachments/assets/9812a709-c2ea-45e2-bdc5-2897a2dcb21a)
+![dashboard-user-Mr Appy](https://github.com/user-attachments/assets/dd7160b1-4b44-4b84-be5b-c32d7f9d35f2)
+![Estadisticas-Mr Appy](https://github.com/user-attachments/assets/b3993a18-35eb-40de-b3cc-c6de24a60081)
+
 # MrAppy: Aplicación de Gestión de Equipos y Bienestar
 
 [![React](https://img.shields.io/badge/Frontend-React-blue)](https://reactjs.org/) [![TypeScript](https://img.shields.io/badge/Code-TypeScript-%23007ACC)](https://www.typescriptlang.org/) [![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-38b2ac)](https://tailwindcss.com/) [![Status](https://img.shields.io/badge/Status-Development-orange)]()
